@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#019587</color>
+    <color name="divider">#E5E5E5</color>
+    <color name="aboutDivider">#9A5F21</color>
+    <color name="aboutOK">#4982F9</color>
+    <color name="download">#FF8F0D</color>
+    <color name="result">#9E9E9E</color>
+    <color name="type">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -1,0 +1,34 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <!--<style name="CustomWindowTitleBackground">-->
+        <!--<item name="android:background">#212121</item>-->
+    <!--</style>-->
+
+    <!--<style name="CustomTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+        <!--<item name="android:windowTitleSize">50dp</item>-->
+        <!--<item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>-->
+    <!--</style>-->
+
+    <style name="AboutDialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#323232</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="ResultDialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+</resources>
