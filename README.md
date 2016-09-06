@@ -20,7 +20,10 @@ Google Play Download
 -----------
 https://play.google.com/store/apps/details?id=com.dynamsoft.demo.dynamsoftbarcodereaderdemo
 
-
+Blog
+-----
+[Android Barcode Scanner with Dynamsoft Mobile Barcode SDK][3]
 
 [1]:http://www.dynamsoft.com/Products/barcode-scanner-sdk-android.aspx
 [2]:http://www.dynamsoft.com/Downloads/Dynamic-Barcode-Reader-Download.aspx
+[3]:http://www.codepool.biz/android-barcode-scanner-dynamsoft-sdk.html
