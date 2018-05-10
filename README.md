@@ -20,6 +20,10 @@ Google Play Download
 -----------
 https://play.google.com/store/apps/details?id=com.dynamsoft.demo.dynamsoftbarcodereaderdemo
 
+License
+--------
+Get the [trial license](https://www.dynamsoft.com/CustomerPortal/Portal/Triallicense.aspx).
+
 Blog
 -----
 [Android Barcode Scanner with Dynamsoft Mobile Barcode SDK][3]
