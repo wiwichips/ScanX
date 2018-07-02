@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#000000">
+
+	<ImageButton
+		android:id="@+id/imageButton"
+		android:layout_width="100dp"
+		android:layout_height="50dp"
+		android:layout_marginBottom="8dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:background="@drawable/scan"
+		android:onClick="onClick"
+		app:layout_constraintBottom_toTopOf="@+id/imageButton3"
+		app:layout_constraintEnd_toEndOf="@+id/imageButton3"
+		app:layout_constraintHorizontal_bias="0.498"
+		app:layout_constraintStart_toStartOf="@+id/imageButton3"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_chainStyle="spread"/>
+
+	<ImageButton
+		android:id="@+id/imageButton2"
+		android:layout_width="200dp"
+		android:layout_height="60dp"
+		android:layout_marginBottom="8dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:background="@drawable/use_case_ocr"
+		android:onClick="onClick"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.497"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/imageButton3"/>
+
+	<ImageButton
+		android:id="@+id/imageButton3"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:layout_marginBottom="8dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:background="@drawable/use_case_qr"
+		android:onClick="onClick"
+		app:layout_constraintBottom_toTopOf="@+id/imageButton2"
+		app:layout_constraintEnd_toEndOf="@+id/imageButton2"
+		app:layout_constraintHorizontal_bias="0.498"
+		app:layout_constraintStart_toStartOf="@+id/imageButton2"
+		app:layout_constraintTop_toBottomOf="@+id/imageButton"
+		app:layout_constraintVertical_bias="0.236"/>
+</android.support.constraint.ConstraintLayout>

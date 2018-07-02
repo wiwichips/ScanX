@@ -1,0 +1,18 @@
+<resources>
+	<dimen name="fab_margin">16dp</dimen>
+	<dimen name="size_qr_box_view_corner">8dp</dimen>
+	<dimen name="size_qr_box_view_corner_offset">4dp</dimen>
+	<dimen name="length_qr_box_view_corner">30dp</dimen>
+	<dimen name="f_qr_box_view_desc">16sp</dimen>
+	<dimen name="f_qr_box_action_desc">12sp</dimen>
+
+	<dimen name="ml_qr_box_action">10dp</dimen>
+	<dimen name="width_qr_box_view">240dp</dimen>
+	<dimen name="height_qr_box_view">240dp</dimen>
+	<dimen name="height_qr_box_view_desc">35dp</dimen>
+
+	<dimen name="activity_horizontal_margin">16dp</dimen>
+	<dimen name="activity_vertical_margin">16dp</dimen>
+	<dimen name="dialog_margin">24dp</dimen>
+	<dimen name="dialog_margin_bottom">8dp</dimen>
+</resources>
