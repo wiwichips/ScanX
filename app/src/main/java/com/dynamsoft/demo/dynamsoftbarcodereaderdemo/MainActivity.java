@@ -22,7 +22,8 @@ import android.widget.TextView;
 import com.dynamsoft.barcode.jni.BarcodeReader;
 import com.dynamsoft.barcode.jni.EnumImagePixelFormat;
 import com.dynamsoft.barcode.jni.TextResult;
-
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Frame;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 	private DBRCache mCache;
 	private String name = "";
 	private boolean isFlashOn = false;
+	private boolean isCameraOpen = false;
 
 	@SuppressLint("HandlerLeak")
 	private Handler handler = new Handler() {
@@ -140,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
 
 						}
 					});
-					builder.show();
+					if (!MainActivity.this.isFinishing()) {
+						builder.show();
+					}
 					break;
 				default:
 					break;
@@ -191,12 +195,19 @@ public class MainActivity extends AppCompatActivity {
 		mCache.put("pdf417", "1");
 		mCache.put("matrix", "1");
 
+		cameraView.addCameraListener(new CameraListener() {
+			@Override
+			public void onCameraOpened(CameraOptions options) {
+				super.onCameraOpened(options);
+				isCameraOpen = true;
+			}
+		});
 		cameraView.addFrameProcessor(new FrameProcessor() {
 			@SuppressLint("NewApi")
 			@Override
 			public void process(@NonNull Frame frame) {
 				try {
-					if (isDetected) {
+					if (isDetected && isCameraOpen) {
 						isDetected = false;
 						YuvImage yuvImage = new YuvImage(frame.getData(), ImageFormat.NV21,
 								frame.getSize().getWidth(), frame.getSize().getHeight(), null);
