@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		try {
-			reader = new BarcodeReader("f0068MgAAAB1lHa1TS73f6hvSsyG9UkU+EITa8w0074QekQD7/goxYCguWUiLgYMKRg4ta39gsM08V5J5F3H0l6puHcJ0Yso=");
+			reader = new BarcodeReader("t0068MgAAAA70elzyXYmS7moRx7im7XPCr58/2f7IyvaQfe2y0goR2REXg7tfQ8Mv48LhyuiCPwaCnuPb7CKFYrg9B/Yc30k=");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
