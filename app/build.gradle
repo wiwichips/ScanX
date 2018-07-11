@@ -34,6 +34,6 @@ dependencies {
     implementation 'cn.bingoogolapple:bga-baseadapter:1.2.7@aar'
     implementation 'com.github.bumptech.glide:glide:4.5.0'
     implementation 'cn.bingoogolapple:bga-photopicker:1.2.8@aar'
-    implementation(name: 'DynamsoftBarcodeReaderAndroid-debug', ext: 'aar')
     implementation 'pub.devrel:easypermissions:1.2.0'
+    implementation 'com.dynamsoft:dbr:6.2'
 }
