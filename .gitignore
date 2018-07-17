@@ -9,3 +9,6 @@
 /build
 /captures
 .externalNativeBuild
+*.apk
+app/release/license.txt
+app/release/output.json

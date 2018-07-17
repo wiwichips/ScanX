@@ -6,7 +6,7 @@ android {
         applicationId "com.dynamsoft.demo.dynamsoftbarcodereaderdemo"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 4
+        versionCode 7
         versionName "6.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -16,7 +16,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            if (!variant.buildType.isDebuggable()) {
+                outputFileName = "dbronlinedemo_V${variant.versionName}_${buildTime()}.apk"
+            }
+        }
+    }
 }
+
+static def buildTime() {
+    return new Date().format("yyyy-MM-dd")
+}
+
 repositories {
     flatDir {
         dirs 'libs'

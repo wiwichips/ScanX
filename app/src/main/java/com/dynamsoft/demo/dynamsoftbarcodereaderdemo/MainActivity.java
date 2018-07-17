@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		try {
-			reader = new BarcodeReader("t0068MgAAAA70elzyXYmS7moRx7im7XPCr58/2f7IyvaQfe2y0goR2REXg7tfQ8Mv48LhyuiCPwaCnuPb7CKFYrg9B/Yc30k=");
+			reader = new BarcodeReader(getString(R.string.dbr_license));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -264,8 +264,7 @@ public class MainActivity extends AppCompatActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		try {
-			reader = new BarcodeReader("t0068MgAAAJmtGjsv3J5mDE0ECeH0+ZFEr7BJl7gcdJZFYzqa2sZK" +
-					"hpQcsNcQlPZooMc5wDrCWMKnQ72T/+01qsEpM3nwIjc=");
+			reader = new BarcodeReader(getString(R.string.dbr_license));
 			JSONObject object = new JSONObject("{\n" +
 					"  \"ImageParameters\": {\n" +
 					"    \"Name\": \"linear\",\n" +
