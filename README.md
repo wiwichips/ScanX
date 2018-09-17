@@ -3,7 +3,7 @@ Android Barcode Scanner with Dynamsoft Barcode Reader SDK
 
 The sample demonstrates how to create an Android barcode scanner with Dynamsoft [Android barcode SDK][1].
 
-![Android barcode scanner](http://www.codepool.biz/wp-content/uploads/2016/08/barcode-scanner-result.png)
+![Android barcode scanner](https://www.codepool.biz/wp-content/uploads/images/android-barcode-setting.png)
 
 Getting Started
 ---------------
