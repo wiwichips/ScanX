@@ -7,10 +7,8 @@ The sample demonstrates how to create an Android barcode scanner with Dynamsoft 
 
 Getting Started
 ---------------
-1. Download [SDK][2] package.
-2. Extract the package and import the project to **Android Studio**.
-3. Build the project.
-4. Run the app on **Android Emulator** or **Android Phone**.
+1. Build the project.
+2. Run the app on **Android Emulator** or **Android Phone**.
 
 Video
 -----
