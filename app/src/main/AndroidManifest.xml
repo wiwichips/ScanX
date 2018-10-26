@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.dynamsoft.demo.dynamsoftbarcodereaderdemo"
           xmlns:android="http://schemas.android.com/apk/res/android">
-
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>\
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.CAMERA"/>
 	<application
 		android:icon="@mipmap/logodbr"
@@ -10,6 +10,7 @@
 		android:largeHeap="true"
 		android:theme="@style/AppTheme">
 		<activity
+			android:screenOrientation="portrait"
 			android:name="com.dynamsoft.demo.dynamsoftbarcodereaderdemo.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>

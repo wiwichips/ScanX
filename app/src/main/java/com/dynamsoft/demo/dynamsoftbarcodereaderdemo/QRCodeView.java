@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class QRCodeView extends RelativeLayout {
     private FrameLayout boxView;
     private TextView textView;
     private OnClickListener lightOnClickListener;
+    private ImageView mIvScanLine;
 
     public QRCodeView(Context context) {
         super(context);
@@ -80,11 +82,28 @@ public class QRCodeView extends RelativeLayout {
         typedArray.recycle();
         boxView = (FrameLayout) findViewById(R.id.fl_box_view);
         textView = (TextView) findViewById(R.id.tv_desc);
-        LayoutParams params = (LayoutParams) boxView.getLayoutParams();
-        params.width = boxViewWidth;
-        params.height = boxViewHeight;
-        boxView.setLayoutParams(params);
+//        LayoutParams params = (LayoutParams) boxView.getLayoutParams();
+//        params.width = boxViewWidth;
+//        params.height = boxViewHeight;
+//        boxView.setLayoutParams(params);
+//        setBackgroundResource(R.color.qr_code_view_mask);
+
+        mIvScanLine = findViewById(R.id.img_scan_line);
+    }
+
+    public void reSetboxview(int left,int top,int width,int height){
+
+
+        MarginLayoutParams margin =new MarginLayoutParams(boxView.getLayoutParams());
+        margin.setMargins(left,top,left+width,top+height);
+        boxViewWidth = width;
+        boxViewHeight = height;
+        LayoutParams layoutParams =new LayoutParams(margin);
+        boxView.setLayoutParams(layoutParams);
+        // boxView.removeAllViews();
+        // boxView.addView(mIvScanLine);
         setBackgroundResource(R.color.qr_code_view_mask);
+
     }
 
     @Override
