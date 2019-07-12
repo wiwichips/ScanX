@@ -33,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.dynamsoft.barcode.BarcodeReader;
 import com.dynamsoft.barcode.EnumBarcodeFormat;
-import com.dynamsoft.barcode.EnumConflictMode;
 import com.dynamsoft.barcode.EnumImagePixelFormat;
 import com.dynamsoft.barcode.PublicRuntimeSettings;
 import com.dynamsoft.barcode.TextResult;
@@ -44,8 +43,6 @@ import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Frame;
 import com.otaliastudios.cameraview.FrameProcessor;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -114,10 +111,10 @@ public class MainActivity extends AppCompatActivity {
 						Arrays.sort(yAarray);
 						String barcodeFormat = "";
 						switch (result.barcodeFormat) {
-							case EnumBarcodeFormat.BF_All:
+							case EnumBarcodeFormat.BF_ALL:
 								barcodeFormat = "all";
 								break;
-							case EnumBarcodeFormat.BF_OneD:
+							case EnumBarcodeFormat.BF_ONED:
 								barcodeFormat = "OneD";
 								break;
 							case EnumBarcodeFormat.BF_CODE_39:
@@ -233,30 +230,12 @@ public class MainActivity extends AppCompatActivity {
         mFrameDetectRegion.bottom = bottom;
         try {
         	PublicRuntimeSettings runtimeSettings = reader.getRuntimeSettings();
-			String tempTemplateJsonWithRegion =
-					"{" +
-							"\"Version\": \"2.0\"," +
-							"\"ImageParameter\": " +
-							"{" +
-							"\"Name\": \"" + "All_DEFAULT_WITHREGION" + "\"," +
-							"\"RegionDefinitionNameArray\": [\"Region\"]" +
-							"}," +
-							"\"RegionDefinitionArray\": " +
-							"[" +
-							"{" +
-							"\"Name\": \"Region\"," +
-							"\"MeasuredByPercentage\": false" + "," +
-							"\"Left\":" + mFrameDetectRegion.left  + "," +
-							"\"Top\":"  + mFrameDetectRegion.top + "," +
-							"\"Right\":"  + mFrameDetectRegion.right + "," +
-							"\"Bottom\":" + mFrameDetectRegion.bottom + "" +
-							"}" +
-							"]}";
-
-			JSONObject object = new JSONObject(tempTemplateJsonWithRegion);
-			String strContent = object.toString();
+        	//runtimeSettings.region = new RegionDefinition();
+        	runtimeSettings.region.regionLeft = mFrameDetectRegion.left;
+			runtimeSettings.region.regionTop = mFrameDetectRegion.top;
+			runtimeSettings.region.regionRight = mFrameDetectRegion.right;
+			runtimeSettings.region.regionBottom = mFrameDetectRegion.bottom;
 			if(reader!=null) {
-				reader.initRuntimeSettingsWithString(strContent, EnumConflictMode.ECM_Overwrite);
 				reader.updateRuntimeSettings(runtimeSettings);
 			}
 			name = "linear";
@@ -269,38 +248,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 	void initBarcodeReader() throws Exception {
+		PublicRuntimeSettings runtimeSettings = reader.getRuntimeSettings();
 
-		String tempTemplateJsonWithRegion =
-				"{" +
-						"\"Version\": \"2.0\"," +
-						"\"ImageParameter\": " +
-							"{" +
-							"\"Name\": \"" + "All_DEFAULT_WITHREGION" + "\"," +
-							"\"BarcodeFormatIds\": [\"OneD\"]," +
-							"\"RegionPredetectionMode\": \"Disable\"," +
-							"\"RegionDefinitionNameArray\": [\"Region\"]" +
-						"}," +
-						"\"RegionDefinitionArray\": " +
-						"[" +
-							"{" +
-								"\"Name\": \"Region\"," +
-								"\"MeasuredByPercentage\": false" + "," +
-								"\"Left\":" + mFrameDetectRegion.left  + "," +
-								"\"Top\":"  + mFrameDetectRegion.top + "," +
-								"\"Right\":"  + mFrameDetectRegion.right + "," +
-								"\"Bottom\":" + mFrameDetectRegion.bottom + "" +
-							"}" +
-						"]}";
-
-		JSONObject object = new JSONObject(tempTemplateJsonWithRegion);
-		JSONArray jsonArray = object.getJSONObject("ImageParameter").getJSONArray("BarcodeFormatIds");
-		jsonArray.put("QR_CODE");
-		jsonArray.put("PDF417");
-		jsonArray.put("DATAMATRIX");
-		Log.d("code type", "type : " + object.toString());
-		String strContent = object.toString();
+		runtimeSettings.region.regionLeft = mFrameDetectRegion.left;
+		runtimeSettings.region.regionTop = mFrameDetectRegion.top;
+		runtimeSettings.region.regionRight = mFrameDetectRegion.right;
+		runtimeSettings.region.regionBottom = mFrameDetectRegion.bottom;
+		runtimeSettings.barcodeFormatIds = EnumBarcodeFormat.BF_ONED | EnumBarcodeFormat.BF_QR_CODE | EnumBarcodeFormat.BF_DATAMATRIX | EnumBarcodeFormat.BF_PDF417;
 		if(reader!=null) {
-            reader.initRuntimeSettingsWithString(strContent, EnumConflictMode.ECM_Overwrite);
+            reader.updateRuntimeSettings(runtimeSettings);
         }
 		name = "linear";
 	}
@@ -310,7 +266,9 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		try {
-			reader = new BarcodeReader("t0068MgAAAI8iSA2hQZp0yylHuenu/rOZ4I89KcP51PybzIWUStBDLcU+4OfXlAet2aEfGnEDKyrVGf/OzIFKg6Io+cBp7TI=");
+			reader = new BarcodeReader();
+			//reader = new BarcodeReader("license-key");
+			//You can get trial license from "https://www.dynamsoft.com/CustomerPortal/Portal/Triallicense.aspx"
 			initBarcodeReader();
 
 		} catch (Exception e) {
@@ -330,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 				builder.setMessage("Dynamsoft Barcode Reader Mobile App Demo(Dynamsoft Barcode Reader" +
-						" SDK v6.4)\n\n© 2018 Dynamsoft. All rights reserved. " +
+						" SDK)\n\n© 2019 Dynamsoft. All rights reserved. " +
 						"\n\nIntegrate Barcode Reader Functionality into Your own Mobile App? " +
 						"\n\nClick 'Overview' button for further info.\n\n");
 				builder.setPositiveButton("Overview", new DialogInterface.OnClickListener() {
@@ -386,9 +344,8 @@ public class MainActivity extends AppCompatActivity {
 						int[] strides = yuvImage.getStrides();
 
 							Log.d("", "begin:");
-							reader.decodeBuffer(yuvImage.getYuvData(), width, height, strides[0], EnumImagePixelFormat.IPF_NV21, "");
+							result = reader.decodeBuffer(yuvImage.getYuvData(), width, height, strides[0], EnumImagePixelFormat.IPF_NV21, "");
 							Log.d("", "finish:");
-							result = reader.getAllTextResults();
 							if (result != null && result.length > 0) {
 								Message message = handler.obtainMessage();
 								message.what = 0x02;
@@ -475,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
 		try {
 			int nBarcodeFormat =0;
 			if (mCache.getAsString("linear").equals("1")) {
-				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_OneD;
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_ONED;
 			}
 			if (mCache.getAsString("qrcode").equals("1")) {
 				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_QR_CODE;
@@ -491,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 
 			PublicRuntimeSettings runtimeSettings =  reader.getRuntimeSettings();
-			runtimeSettings.mBarcodeFormatIds = nBarcodeFormat;
+			runtimeSettings.barcodeFormatIds = nBarcodeFormat;
 			reader.updateRuntimeSettings(runtimeSettings);
 
 		} catch (Exception e) {
