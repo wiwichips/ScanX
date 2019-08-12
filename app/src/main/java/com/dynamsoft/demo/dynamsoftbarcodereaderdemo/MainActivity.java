@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private Rect mFrameDetectRegion = new Rect(0,0,500,500);
 
-	private Rect mViewDetectRegion = new Rect(0,0,800,800);
+	private Rect mViewDetectRegion;
 	private FrameLayout frameLayout;
 	private int mSensorOffset;
 
@@ -192,7 +192,11 @@ public class MainActivity extends AppCompatActivity {
 				{
 					int nViewW = cameraView.getWidth();
 					int nViewH = cameraView.getHeight();
-
+					if (cameraView.getWidth() < cameraView.getHeight()) {
+						mViewDetectRegion = new Rect(0, 0, (new Double(cameraView.getWidth() * 0.8)).intValue(), (new Double(cameraView.getWidth()*0.8)).intValue());
+					} else {
+						mViewDetectRegion = new Rect(0, 0, (new Double(cameraView.getHeight() * 0.8)).intValue(), (new Double(cameraView.getHeight()*0.8)).intValue());
+					}
 					//TODO:make the view region show in the center of camera view. You can change the region's position if you want.
 					mViewDetectRegion=new Rect((nViewW-mViewDetectRegion.width())/2,(nViewH-mViewDetectRegion.height())/2,
 							(nViewW-mViewDetectRegion.width())/2+mViewDetectRegion.width(),(nViewH-mViewDetectRegion.height())/2+mViewDetectRegion.height());
