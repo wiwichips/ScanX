@@ -23,6 +23,18 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 	CheckBox mDataMatrix;
 	@BindView(R.id.ckbAztec)
 	CheckBox mDataAztec;
+	@BindView(R.id.ckbDatabar)
+	CheckBox mDataBar;
+	@BindView(R.id.ckbPatchCode)
+	CheckBox mPatchCode;
+	@BindView(R.id.ckbMaxiCode)
+	CheckBox mMaxiCode;
+	@BindView(R.id.ckbMicroQR)
+	CheckBox mMicroQR;
+	@BindView(R.id.ckbMicroPDF417)
+	CheckBox mMicroPDF417;
+	@BindView(R.id.ckbGS1Composite)
+	CheckBox mGS1Composite;
 	private int mBarcodeFormat;
 	private DBRCache mCache;
 
@@ -46,6 +58,12 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 		mPDF417.setOnCheckedChangeListener(this);
 		mDataMatrix.setOnCheckedChangeListener(this);
 		mDataAztec.setOnCheckedChangeListener(this);
+		mDataBar.setOnCheckedChangeListener(this);
+		mPatchCode.setOnCheckedChangeListener(this);
+		mMaxiCode.setOnCheckedChangeListener(this);
+		mMicroQR.setOnCheckedChangeListener(this);
+		mMicroPDF417.setOnCheckedChangeListener(this);
+		mGS1Composite.setOnCheckedChangeListener(this);
 
 		mCache = DBRCache.get(this);
 		if ("1".equals(mCache.getAsString("linear"))) {
@@ -62,6 +80,24 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 		}
 		if ("1".equals(mCache.getAsString("aztec"))) {
 			mDataAztec.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("databar"))) {
+			mDataBar.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("patchcode"))) {
+			mPatchCode.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("maxicode"))) {
+			mMaxiCode.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("microqr"))) {
+			mMicroQR.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("micropdf417"))) {
+			mMicroPDF417.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("gs1compositecode"))) {
+			mGS1Composite.setChecked(true);
 		}
 		updateFormatCheckboxsState();
 
@@ -90,6 +126,30 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			nState++;
 			enabledCheckBox = mDataAztec;
 		}
+		if(mDataBar.isChecked()) {
+			nState++;
+			enabledCheckBox = mDataBar;
+		}
+		if(mPatchCode.isChecked()) {
+			nState++;
+			enabledCheckBox = mPatchCode;
+		}
+		if(mMaxiCode.isChecked()) {
+			nState++;
+			enabledCheckBox = mMaxiCode;
+		}
+		if(mMicroQR.isChecked()) {
+			nState++;
+			enabledCheckBox = mMicroQR;
+		}
+		if(mMicroPDF417.isChecked()) {
+			nState++;
+			enabledCheckBox = mMicroPDF417;
+		}
+		if(mGS1Composite.isChecked()) {
+			nState++;
+			enabledCheckBox = mGS1Composite;
+		}
 
 		if(nState ==1){
 			enabledCheckBox.setEnabled(false);
@@ -99,6 +159,12 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			mPDF417.setEnabled(true);
 			mDataMatrix.setEnabled(true);
 			mDataAztec.setEnabled(true);
+			mDataBar.setEnabled(true);
+			mPatchCode.setEnabled(true);
+			mMaxiCode.setEnabled(true);
+			mMicroQR.setEnabled(true);
+			mMicroPDF417.setEnabled(true);
+			mGS1Composite.setEnabled(true);
 		}
 	}
 
@@ -129,6 +195,35 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			mCache.put("aztec", "1");
 		} else {
 			mCache.put("aztec", "0");
+		}if (mDataBar.isChecked()) {
+			mCache.put("databar", "1");
+		} else {
+			mCache.put("databar", "0");
+		}
+		if (mPatchCode.isChecked()) {
+			mCache.put("patchcode", "1");
+		} else {
+			mCache.put("patchcode", "0");
+		}
+		if (mMaxiCode.isChecked()) {
+			mCache.put("maxicode", "1");
+		} else {
+			mCache.put("maxicode", "0");
+		}
+		if (mMicroQR.isChecked()) {
+			mCache.put("microqr", "1");
+		} else {
+			mCache.put("microqr", "0");
+		}
+		if (mMicroPDF417.isChecked()) {
+			mCache.put("micropdf417", "1");
+		} else {
+			mCache.put("micropdf417", "0");
+		}
+		if (mGS1Composite.isChecked()) {
+			mCache.put("gs1compositecode", "1");
+		} else {
+			mCache.put("gs1compositecode", "0");
 		}
 		setResult(0);
 	}
