@@ -318,6 +318,12 @@ public class MainActivity extends AppCompatActivity {
 		mCache.put("pdf417", "1");
 		mCache.put("matrix", "1");
 		mCache.put("aztec", "0");
+		mCache.put("databar", "0");
+		mCache.put("patchcode", "0");
+		mCache.put("maxicode", "0");
+		mCache.put("microqr", "0");
+		mCache.put("micropdf417", "0");
+		mCache.put("gs1compositecode", "0");
 
 		cameraView.addCameraListener(new CameraListener() {
 			@Override
@@ -449,6 +455,24 @@ public class MainActivity extends AppCompatActivity {
 			}
 			if (mCache.getAsString("aztec").equals("1")) {
 				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_AZTEC;
+			}
+			if (mCache.getAsString("databar").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_GS1_DATABAR;
+			}
+			if (mCache.getAsString("patchcode").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_PATCHCODE;
+			}
+			if (mCache.getAsString("maxicode").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_MAXICODE;
+			}
+			if (mCache.getAsString("microqr").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_MICRO_QR;
+			}
+			if (mCache.getAsString("micropdf417").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_MICRO_PDF417;
+			}
+			if (mCache.getAsString("gs1compositecode").equals("1")) {
+				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_GS1_COMPOSITE;
 			}
 
 			PublicRuntimeSettings runtimeSettings =  reader.getRuntimeSettings();
