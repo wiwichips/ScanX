@@ -109,60 +109,7 @@ public class MainActivity extends AppCompatActivity {
 						int[] yAarray = new int[]{y0, y1, y2, y3};
 						Arrays.sort(xAarray);
 						Arrays.sort(yAarray);
-						String barcodeFormat = "";
-						switch (result.barcodeFormat) {
-							case EnumBarcodeFormat.BF_ALL:
-								barcodeFormat = "all";
-								break;
-							case EnumBarcodeFormat.BF_ONED:
-								barcodeFormat = "OneD";
-								break;
-							case EnumBarcodeFormat.BF_CODE_39:
-								barcodeFormat = "CODE_39";
-								break;
-							case EnumBarcodeFormat.BF_CODE_128:
-								barcodeFormat = "CODE_128";
-								break;
-							case EnumBarcodeFormat.BF_CODE_93:
-								barcodeFormat = "CODE_93";
-								break;
-							case EnumBarcodeFormat.BF_CODABAR:
-								barcodeFormat = "CODABAR";
-								break;
-							case EnumBarcodeFormat.BF_ITF:
-								barcodeFormat = "ITF";
-								break;
-							case EnumBarcodeFormat.BF_EAN_13:
-								barcodeFormat = "EAN_13";
-								break;
-							case EnumBarcodeFormat.BF_EAN_8:
-								barcodeFormat = "EAN_8";
-								break;
-							case EnumBarcodeFormat.BF_UPC_A:
-								barcodeFormat = "UPC_A";
-								break;
-							case EnumBarcodeFormat.BF_UPC_E:
-								barcodeFormat = "UPC_E";
-								break;
-							case EnumBarcodeFormat.BF_INDUSTRIAL_25:
-								barcodeFormat = "INDUSTRIAL_25";
-								break;
-							case EnumBarcodeFormat.BF_PDF417:
-								barcodeFormat = "PDF417";
-								break;
-							case EnumBarcodeFormat.BF_QR_CODE:
-								barcodeFormat = "QR_CODE";
-								break;
-							case EnumBarcodeFormat.BF_DATAMATRIX:
-								barcodeFormat = "DATAMATAIX";
-								break;
-							case EnumBarcodeFormat.BF_AZTEC:
-								barcodeFormat="AZTEC";
-								break;
-							default:
-								break;
-						}
-						builder.setMessage("Type : " + barcodeFormat + "\n\nResult : " + result.barcodeText + "\n\n RegionPoints:"
+						builder.setMessage("Type : " + result.barcodeFormatString + "\n\nResult : " + result.barcodeText + "\n\n RegionPoints:"
 								+result.localizationResult.resultPoints[0].x
 								+","+result.localizationResult.resultPoints[0].y
 								+"  "
