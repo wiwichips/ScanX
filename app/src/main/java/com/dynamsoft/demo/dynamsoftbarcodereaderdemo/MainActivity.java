@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.dynamsoft.barcode.BarcodeReader;
 import com.dynamsoft.barcode.EnumBarcodeFormat;
+import com.dynamsoft.barcode.EnumBarcodeFormat_2;
 import com.dynamsoft.barcode.EnumImagePixelFormat;
 import com.dynamsoft.barcode.PublicRuntimeSettings;
 import com.dynamsoft.barcode.TextResult;
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
 		mCache.put("microqr", "0");
 		mCache.put("micropdf417", "0");
 		mCache.put("gs1compositecode", "0");
+		mCache.put("postalcode", "0");
 
 		cameraView.addCameraListener(new CameraListener() {
 			@Override
@@ -387,7 +389,8 @@ public class MainActivity extends AppCompatActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		try {
-			int nBarcodeFormat =0;
+			int nBarcodeFormat = 0;
+			int nBarcodeFormat_2 =0;
 			if (mCache.getAsString("linear").equals("1")) {
 				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_ONED;
 			}
@@ -421,9 +424,13 @@ public class MainActivity extends AppCompatActivity {
 			if (mCache.getAsString("gs1compositecode").equals("1")) {
 				nBarcodeFormat = nBarcodeFormat|EnumBarcodeFormat.BF_GS1_COMPOSITE;
 			}
+			if (mCache.getAsString("postalcode").equals("1")) {
+				nBarcodeFormat_2 = nBarcodeFormat_2 | EnumBarcodeFormat_2.BF2_POSTALCODE;
+			}
 
 			PublicRuntimeSettings runtimeSettings =  reader.getRuntimeSettings();
 			runtimeSettings.barcodeFormatIds = nBarcodeFormat;
+			runtimeSettings.barcodeFormatIds_2 = nBarcodeFormat_2;
 			reader.updateRuntimeSettings(runtimeSettings);
 
 		} catch (Exception e) {

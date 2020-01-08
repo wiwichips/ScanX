@@ -30,4 +30,5 @@
 	<string name="MicroPDF417">MicroPDF417</string>
 	<string name="GS1Composite">GS1 Composite Code</string>
 	<string name="dbr_license">t0068MgAAAI8iSA2hQZp0yylHuenu/rOZ4I89KcP51PybzIWUStBDLcU+4OfXlAet2aEfGnEDKyrVGf/OzIFKg6Io+cBp7TI=</string>
+	<string name="postalcode">Postal Code</string>
 </resources>
