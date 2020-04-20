@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
 		mCache.put("micropdf417", "0");
 		mCache.put("gs1compositecode", "0");
 		mCache.put("postalcode", "0");
+        	mCache.put("dotcode", "0");
 
 		cameraView.addCameraListener(new CameraListener() {
 			@Override
@@ -427,6 +428,9 @@ public class MainActivity extends AppCompatActivity {
 			if (mCache.getAsString("postalcode").equals("1")) {
 				nBarcodeFormat_2 = nBarcodeFormat_2 | EnumBarcodeFormat_2.BF2_POSTALCODE;
 			}
+           		if (mCache.getAsString("dotcode").equals("1")) {
+                		nBarcodeFormat_2 = nBarcodeFormat_2 | EnumBarcodeFormat_2.BF2_DOTCODE;
+            		}
 
 			PublicRuntimeSettings runtimeSettings =  reader.getRuntimeSettings();
 			runtimeSettings.barcodeFormatIds = nBarcodeFormat;
