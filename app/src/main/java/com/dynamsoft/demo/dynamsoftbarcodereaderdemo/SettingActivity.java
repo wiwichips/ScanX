@@ -37,6 +37,8 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 	CheckBox mGS1Composite;
 	@BindView(R.id.ckbPostalCode)
 	CheckBox mPostalCode;
+	@BindView(R.id.ckbDotCode)
+	CheckBox mDotCode;
 	private int mBarcodeFormat;
 	private DBRCache mCache;
 
@@ -67,6 +69,7 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 		mMicroPDF417.setOnCheckedChangeListener(this);
 		mGS1Composite.setOnCheckedChangeListener(this);
 		mPostalCode.setOnCheckedChangeListener(this);
+		mDotCode.setOnCheckedChangeListener(this);
 
 		mCache = DBRCache.get(this);
 		if ("1".equals(mCache.getAsString("linear"))) {
@@ -104,6 +107,13 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 		}
 		if ("1".equals(mCache.getAsString("postalcode"))) {
 			mPostalCode.setChecked(true);
+		}
+		if ("1".equals(mCache.getAsString("dotcode"))) {
+			mDotCode.setChecked(true);
+		}
+		if (mDotCode.isChecked()) {
+			nState++;
+			enabledCheckBox = mDotCode;
 		}
 		updateFormatCheckboxsState();
 
@@ -160,6 +170,10 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			nState++;
 			enabledCheckBox = mPostalCode;
 		}
+		if (mDotCode.isChecked()) {
+			nState++;
+			enabledCheckBox = mDotCode;
+		}
 
 		if(nState ==1){
 			enabledCheckBox.setEnabled(false);
@@ -176,6 +190,7 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			mMicroPDF417.setEnabled(true);
 			mGS1Composite.setEnabled(true);
 			mPostalCode.setEnabled(true);
+			mDotCode.setEnabled(true);
 		}
 	}
 
@@ -240,6 +255,11 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 			mCache.put("postalcode", "1");
 		} else {
 			mCache.put("postalcode", "0");
+		}
+		if (mDotCode.isChecked()) {
+			mCache.put("dotcode", "1");
+		} else {
+			mCache.put("dotcode", "0");
 		}
 		setResult(0);
 	}
