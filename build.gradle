@@ -20,7 +20,7 @@ allprojects {
         google()
         jcenter()
         maven {
-            url "http://download.dynamsoft.com/maven/dbr/aar"
+            url "http://download2.dynamsoft.com/maven/dbr/aar"
         }
     }
 }
