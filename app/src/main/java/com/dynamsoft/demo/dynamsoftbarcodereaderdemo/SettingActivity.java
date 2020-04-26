@@ -111,10 +111,7 @@ public class SettingActivity extends AppCompatActivity implements CompoundButton
 		if ("1".equals(mCache.getAsString("dotcode"))) {
 			mDotCode.setChecked(true);
 		}
-		if (mDotCode.isChecked()) {
-			nState++;
-			enabledCheckBox = mDotCode;
-		}
+		
 		updateFormatCheckboxsState();
 
 	}
