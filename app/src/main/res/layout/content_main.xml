@@ -1,50 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-	android:id="@+id/fl_main_content"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
 
-	app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	tools:context="com.dynamsoft.demo.dynamsoftbarcodereaderdemo.MainActivity"
-	tools:showIn="@layout/activity_main">
-	<com.otaliastudios.cameraview.CameraView
-		android:id="@+id/cameraView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:keepScreenOn="true"/>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
 
-	<ImageView
-		android:layout_width="150dp"
-		android:layout_height="150dp"
-		android:id="@+id/iv_prevew"
-		android:scaleType="centerInside"/>
-	<com.dynamsoft.demo.dynamsoftbarcodereaderdemo.QRCodeView
-		android:id="@+id/qr_view"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        tools:context="com.dynamsoft.sample.dbrcamerapreview.MainActivity">
 
-		<TextView
-			android:id="@+id/textView"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentStart="true"
-			android:gravity="center_vertical|center_horizontal"
-			android:text="TextView"
-			android:textColor="@color/bga_pp_common_textColor" />
-	</com.dynamsoft.demo.dynamsoftbarcodereaderdemo.QRCodeView>
-	<TextView
-		android:id="@+id/tv_flash"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|center_horizontal"
-		android:layout_marginBottom="100dp"
-		android:text="Flash"
-		android:textColor="#ffffff"
-		android:textSize="20sp"/>
+    </FrameLayout>
 
-</FrameLayout>
+
+</android.support.constraint.ConstraintLayout>

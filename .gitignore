@@ -4,11 +4,7 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
-.idea
 .DS_Store
 /build
 /captures
 .externalNativeBuild
-*.apk
-app/release/license.txt
-app/release/output.json
