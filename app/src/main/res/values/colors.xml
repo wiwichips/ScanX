@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="control_background">#204285f4</color>
+
+    <color name="type">#000000</color>
+    <color name="divider">#E5E5E5</color>
+
+    <color name="qr_code_view_mask">#60000000</color>
+    <color name="qr_code_view_corner">#FF2A7C3B</color>
+    <color name="qr_code_view_border">#ffffffff</color>
+</resources>
