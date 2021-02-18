@@ -32,7 +32,6 @@ public class QRCodeView extends RelativeLayout {
     private FrameLayout boxView;
     private TextView textView;
     private OnClickListener lightOnClickListener;
-    private ImageView mIvScanLine;
 
     public QRCodeView(Context context) {
         super(context);
@@ -84,13 +83,9 @@ public class QRCodeView extends RelativeLayout {
 //        params.height = boxViewHeight;
 //        boxView.setLayoutParams(params);
 //        setBackgroundResource(R.color.qr_code_view_mask);
-
-        mIvScanLine = findViewById(R.id.img_scan_line);
     }
 
     public void reSetboxview(int left, int top, int width, int height) {
-
-
         MarginLayoutParams margin = new MarginLayoutParams(boxView.getLayoutParams());
         margin.setMargins(left, top, left + width, top + height);
         boxViewWidth = width;
@@ -101,15 +96,6 @@ public class QRCodeView extends RelativeLayout {
         // boxView.addView(mIvScanLine);
         setBackgroundResource(R.color.qr_code_view_mask);
 
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.exlore_line_move);
-        animation.setInterpolator(new LinearInterpolator());
-        findViewById(R.id.img_scan_line).setAnimation(animation);
-        animation.start();
     }
 
     @Override
