@@ -7,5 +7,5 @@
         android:repeatCount="infinite"
         android:repeatMode="restart"
         android:toXDelta="0"
-        android:toYDelta="70%p"></translate>
+        android:toYDelta="70%p" />
 </set>
