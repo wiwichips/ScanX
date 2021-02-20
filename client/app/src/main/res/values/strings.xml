@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DBRCameraPreview</string>
+    <string name="app_name">ScanX</string>
     <string name="action_settings">Types Setting</string>
 
     <string name="request_permission">This sample needs camera permission.</string>
