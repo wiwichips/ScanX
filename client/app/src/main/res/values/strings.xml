@@ -35,4 +35,8 @@
     <string name="GS1Composite">GS1 Composite Code</string>
     <string name="postalcode">Postal Code</string>
     <string name="dotcode">DotCode</string>
+    <string name="edit_item_name">Edit Item Name</string>
+    <string name="product">Product</string>
+    <string name="quantity">Quantity</string>
+    <string name="submit_changes">Submit Changes</string>
 </resources>

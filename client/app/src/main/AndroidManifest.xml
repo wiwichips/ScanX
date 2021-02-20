@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.dynamsoft.sample.dbrcamerapreview.SettingActivity" />
+        <activity android:name=".PopUp"></activity>
     </application>
 
 </manifest>
