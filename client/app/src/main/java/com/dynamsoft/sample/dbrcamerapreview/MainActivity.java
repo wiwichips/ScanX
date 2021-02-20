@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.dynamsoft.dbr.BarcodeReader;
@@ -166,4 +167,23 @@ public class MainActivity extends AppCompatActivity {
     public BarcodeReader getMainBarcdoeReader() {
         return mbarcodeReader;
     }
+
+
+    /**
+     * Event listeners for main page buttons
+     */
+
+    public void onScan(View view) {
+        System.out.println("Scan Hello world");
+    }
+
+    public void onFlash(View view) {
+        // This is the event for the flashlight button
+        System.out.println("Flashlight - #11 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/11");
+    }
+
+    public void onInventory(View view) {
+        System.out.println("Erin");
+    }
+
 }
