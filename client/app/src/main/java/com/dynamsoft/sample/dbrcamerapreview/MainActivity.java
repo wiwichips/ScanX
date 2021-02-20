@@ -174,16 +174,17 @@ public class MainActivity extends AppCompatActivity {
      */
 
     public void onScan(View view) {
-        System.out.println("Scan Hello world");
+        // This method is the event listneer for the flashlight button
+        System.out.println("Scan - #7 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/7");
     }
 
     public void onFlash(View view) {
-        // This is the event for the flashlight button
+        // This method is the event listener for the flashlight button
         System.out.println("Flashlight - #11 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/11");
     }
 
     public void onInventory(View view) {
-        System.out.println("Erin");
+        // This method is the event listener for the inventory button
     }
 
 }
