@@ -10,16 +10,21 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.dynamsoft.dbr.BarcodeReader;
+import com.dynamsoft.dbr.BarcodeReaderException;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
 import com.dynamsoft.dbr.EnumBarcodeFormat_2;
 import com.dynamsoft.dbr.EnumConflictMode;
+import com.dynamsoft.dbr.EnumImagePixelFormat;
 import com.dynamsoft.dbr.EnumIntermediateResultType;
+import com.dynamsoft.dbr.ImageData;
 import com.dynamsoft.dbr.PublicRuntimeSettings;
+import com.dynamsoft.dbr.TextResult;
 import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache;
 
 public class MainActivity extends AppCompatActivity {
     private BarcodeReader mbarcodeReader;
     private DBRCache mCache;
+    private Camera2BasicFragment camera2BasicFragment;
 
 
     @Override
@@ -77,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (null == savedInstanceState) {
+            camera2BasicFragment = Camera2BasicFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
+                    .replace(R.id.container, camera2BasicFragment)
                     .commit();
         }
     }
@@ -183,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
          * This comment describes the code that will be written at a later date. This code will
          * likely be contained in separate classes, but the general logic flow will be as follows
          *
+         * If a barcode is scanned, continue, else return
+         *
          * Make a request to the backend to see if there is an entry in the db for the barcode
          *
          * If there is not an entry:
@@ -204,6 +212,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Else, if there is an entry
         // ... else ...
+//        ImageData imageData = ;
+//        TextResult[] results = this.getMainBarcdoeReader().decodeBuffer(imageData.mBytes, imageData.mWidth, imageData.mHeight, imageData.mStride, EnumImagePixelFormat.IPF_NV21, "");
+
+
+
         startActivity(new Intent(MainActivity.this, PopUp.class));
     }
 

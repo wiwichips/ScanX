@@ -1027,8 +1027,9 @@ public class Camera2BasicFragment extends Fragment
                 strResult = strCurResult;
             else
                 strResult += "\n\n" + strCurResult;
-
         }
+        System.out.println("====================================");
+        System.out.println(strResult);
         return strResult;
     }
 
