@@ -26,6 +26,7 @@ import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache;
 public class MainActivity extends AppCompatActivity {
     private BarcodeReader mbarcodeReader;
     private DBRCache mCache;
+    private boolean isTorchOn;
 
 
     @Override
@@ -216,11 +217,8 @@ public class MainActivity extends AppCompatActivity {
     // This method is the event listener for the flashlight button
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onFlash(View view) {
-        final String CAMERA_FRONT = "1";
-        final String CAMERA_BACK = "0";
-        String cameraId = CAMERA_BACK;
+        final String cameraId = "0";
         boolean isFlashSupported;
-        boolean isTorchOn;
 
         // Create the CameraManger instance by getting the Camera Service
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -239,7 +237,13 @@ public class MainActivity extends AppCompatActivity {
 
             // If flash is enabled and flash is off -> turn on flash
             if (isFlashSupported) {
-                manager.setTorchMode(cameraId, true);
+                if (this.isTorchOn) {
+                    this.isTorchOn = false;
+                    manager.setTorchMode(cameraId, false);
+                } else {
+                    this.isTorchOn = true;
+                    manager.setTorchMode(cameraId, true);
+                }
             }
 
 
