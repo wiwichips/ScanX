@@ -1,13 +1,22 @@
 package com.dynamsoft.sample.dbrcamerapreview;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.Context;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
 
 import com.dynamsoft.dbr.BarcodeReader;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
@@ -207,8 +216,40 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, PopUp.class));
     }
 
+    // This method is the event listener for the flashlight button
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void onFlash(View view) {
-        // This method is the event listener for the flashlight button
+        final String CAMERA_FRONT = "1";
+        final String CAMERA_BACK = "0";
+        String cameraId = CAMERA_BACK;
+        boolean isFlashSupported;
+        boolean isTorchOn;
+
+        // Create the CameraManger instance by getting the Camera Service
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+        try {
+            // Get Camera Characteristics
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+
+            // Check if flash unit is available
+            isFlashSupported = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+
+
+            System.out.println("CAMERA: " + cameraId);
+            System.out.println("FLASH: " + isFlashSupported);
+
+
+            // If flash is enabled and flash is off -> turn on flash
+            if (isFlashSupported) {
+                manager.setTorchMode(cameraId, true);
+            }
+
+
+        } catch (CameraAccessException e) {
+            System.out.println("Whoopsy daisy, camera is not working: " + e);
+        }
+
         System.out.println("Flashlight - #11 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/11");
     }
 
