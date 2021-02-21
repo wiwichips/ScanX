@@ -27,37 +27,34 @@
             android:rotationX="-360"
             android:rotationY="-360"
             android:text="Scan"
+            android:onClick="onScan"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/switchFlashLight"
+            app:layout_constraintEnd_toStartOf="@+id/btnFlashMain"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnInventoryMain" />
 
         <Button
+            android:id="@+id/btnFlashMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="35dp"
+            android:layout_marginBottom="29dp"
+            android:text="Flashlight"
+            android:onClick="onFlash"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
             android:id="@+id/btnInventoryMain"
-            android:layout_width="103dp"
-            android:layout_height="47dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginBottom="29dp"
-            android:onClick="onInventory"
             android:text="Inventory"
             android:textColorLink="#FFFFFF"
+            android:onClick="onInventory"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <Switch
-            android:id="@+id/switchFlashLight"
-            android:layout_width="85dp"
-            android:layout_height="57dp"
-            android:layout_marginEnd="35dp"
-            android:layout_marginBottom="24dp"
-            android:enabled="false"
-            android:onClick="onFlash"
-            android:text="Flash"
-            android:textColor="#FFFEFE"
-            android:textColorHint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnScanMain" />
     </android.support.constraint.ConstraintLayout>
 
 
