@@ -1,15 +1,12 @@
 package com.dynamsoft.sample.dbrcamerapreview;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
