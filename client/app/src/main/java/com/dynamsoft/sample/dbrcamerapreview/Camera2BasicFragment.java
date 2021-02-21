@@ -278,6 +278,7 @@ public class Camera2BasicFragment extends Fragment
     private Rect mCropRegion;
     private MeteringRectangle[] mAFRegions = AutoFocusHelper.getZeroWeightRegion();
     private MeteringRectangle[] mAERegions = AutoFocusHelper.getZeroWeightRegion();
+    private static CameraManager manager;
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its state.
      */
@@ -501,7 +502,7 @@ public class Camera2BasicFragment extends Fragment
 
     private void setUpCameraOutputs(int width, int height) {
         Activity activity = getActivity();
-        CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
             for (String cameraId : manager.getCameraIdList()) {
                 mCameraCharacteristics
@@ -652,7 +653,8 @@ public class Camera2BasicFragment extends Fragment
         setUpCameraOutputs(width, height);
         configureTransform(width, height);
         Activity activity = getActivity();
-        CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");

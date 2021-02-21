@@ -228,41 +228,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isFlashSupported;
 
         // Create the CameraManger instance by getting the Camera Service
-//        flashControl = findViewById(R.id.btnFlashMain);
-//        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-
-        // Initial Checking
-//        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)) {
-//            if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-//                Toast.makeText(MainActivity.this, "This device has flash", Toast.LENGTH_SHORT).show();
-//                flashControl.setEnabled(true);
-//
-//            } else {
-//                Toast.makeText(MainActivity.this, "This device has no flash", Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//            Toast.makeText(MainActivity.this, "This device has no camera", Toast.LENGTH_SHORT).show();
-//        }
-//
-//        flashControl.setOnClickListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                try {
-//                    if (isChecked) {
-//                        cameraManager.setTorchMode(cameraId, true);
-//                        flashControl.setText("Flash OFF");
-//                    } else {
-//                        cameraManager.setTorchMode(cameraId, false);
-//                        flashControl.setText("Flash ON");
-//                    }
-//                } catch (CameraAccessException e) {
-//                    System.out.println("Whoopsy daisy, camera is not working: ");
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
 
         try {
             // Get Camera Characteristics
