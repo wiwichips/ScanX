@@ -228,18 +228,6 @@ public class Camera2BasicFragment extends Fragment
                 Image mImage = reader.acquireLatestImage();
                 if (mImage != null) {
 
-                    //auto zoom in or zoom out
-                    if (mZoomState == 1) {
-                        if (mZoomRatIndex < gZoomRatio.length)
-                            setZoom(gZoomRatio[mZoomRatIndex++] / 10);
-                    } else if (mZoomState == 0) {
-                        if (mZoomRatIndex > 0) {
-                            mZoomRatIndex--;
-                            setZoom(gZoomRatio[mZoomRatIndex] / 10);
-                        }
-                    }
-                    ///////////////////////////////////////////end auto zoom
-
                     ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
                     int nRowStride = mImage.getPlanes()[0].getRowStride();
                     int nPixelStride = mImage.getPlanes()[0].getPixelStride();
@@ -337,23 +325,6 @@ public class Camera2BasicFragment extends Fragment
         }
 
     };
-    private final Runnable mAutoFocusRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mPreviewRequestBuilder != null) {
-                mIsManualFocusing = false;
-                updateAutoFocus();
-                if (mCaptureSession != null) {
-                    try {
-                        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
-                                mCaptureCallback, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
-                        Log.e(TAG, "Failed to set manual focus.", e);
-                    }
-                }
-            }
-        }
-    };
 
     /**
      * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
@@ -442,8 +413,6 @@ public class Camera2BasicFragment extends Fragment
         mTextureView.setGestureListener(new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-
-                setManualFocusAt((int) e.getX(), (int) e.getY());
                 return true;
             }
         });
@@ -606,11 +575,8 @@ public class Camera2BasicFragment extends Fragment
 
                 mCameraId = cameraId;
 
-                checkAutoFocusSupported();
                 checkFlashSupported();
 
-                mCropRegion = AutoFocusHelper.cropRegionForZoom(mCameraCharacteristics,
-                        CameraConstants.ZOOM_REGION_DEFAULT);
                 if (w == 0 || h == 0) {
                     w = mTextureView.getWidth();
                     h = mTextureView.getHeight();
@@ -836,8 +802,6 @@ public class Camera2BasicFragment extends Fragment
                             // When the session is ready, we start displaying the preview.
                             mCaptureSession = cameraCaptureSession;
                             try {
-                                // Auto focus should be continuous for camera preview.
-                                updateAutoFocus();
                                 // Flash is automatically enabled when necessary.
                                 setAutoFlash(mPreviewRequestBuilder);
 
@@ -903,110 +867,11 @@ public class Camera2BasicFragment extends Fragment
     }
 
     /**
-     * Check if the auto focus is supported.
-     */
-    private void checkAutoFocusSupported() {
-        int[] modes = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
-        mAutoFocusSupported = !(modes == null || modes.length == 0 ||
-                (modes.length == 1 && modes[0] == CameraCharacteristics.CONTROL_AF_MODE_OFF));
-    }
-
-    /**
      * Check if the flash is supported.
      */
     private void checkFlashSupported() {
         Boolean available = mCameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
         mFlashSupported = available == null ? false : available;
-    }
-
-
-    /**
-     * Updates the internal state of manual focus.
-     */
-    void updateManualFocus(float x, float y) {
-        @SuppressWarnings("ConstantConditions")
-        int sensorOrientation = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-        mAFRegions = AutoFocusHelper.afRegionsForNormalizedCoord(x, y, mCropRegion, sensorOrientation);
-        mAERegions = AutoFocusHelper.aeRegionsForNormalizedCoord(x, y, mCropRegion, sensorOrientation);
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, mAFRegions);
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, mAERegions);
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
-    }
-
-    void setManualFocusAt(int x, int y) {
-        int mDisplayOrientation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
-        float[] points = new float[2];
-        points[0] = (float) x / mTextureView.getWidth();
-        points[1] = (float) y / mTextureView.getHeight();
-        Matrix rotationMatrix = new Matrix();
-        rotationMatrix.setRotate(mDisplayOrientation, 0.5f, 0.5f);
-        rotationMatrix.mapPoints(points);
-        if (mPreviewRequestBuilder != null) {
-            mIsManualFocusing = true;
-            updateManualFocus(points[0], points[1]);
-
-            if (mCaptureSession != null) {
-                try {
-                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                            CaptureRequest.CONTROL_AF_TRIGGER_START);
-                    mCaptureSession.capture(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
-                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                            CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
-                    mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
-                            null, mBackgroundHandler);
-                } catch (CameraAccessException | IllegalStateException e) {
-                    Log.e(TAG, "Failed to set manual focus.", e);
-                }
-            }
-            resumeAutoFocusAfterManualFocus();
-        }
-    }
-
-    private void resumeAutoFocusAfterManualFocus() {
-        mBackgroundHandler.removeCallbacks(mAutoFocusRunnable);
-        mBackgroundHandler.postDelayed(mAutoFocusRunnable, CameraConstants.FOCUS_HOLD_MILLIS);
-    }
-
-    void updateAutoFocus() {
-        if (mAutoFocus) {
-            if (!mAutoFocusSupported) {
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                        CaptureRequest.CONTROL_AF_MODE_OFF);
-            } else {
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
-            }
-        } else {
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                    CaptureRequest.CONTROL_AF_MODE_OFF);
-        }
-        mAFRegions = AutoFocusHelper.getZeroWeightRegion();
-        mAERegions = AutoFocusHelper.getZeroWeightRegion();
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, mAFRegions);
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, mAERegions);
-    }
-
-    public boolean getAutoFocus() {
-        return mAutoFocus;
-    }
-
-    public void setAutoFocus(boolean autoFocus) {
-        if (mAutoFocus == autoFocus) {
-            return;
-        }
-        mAutoFocus = autoFocus;
-        if (mPreviewRequestBuilder != null) {
-            updateAutoFocus();
-            if (mCaptureSession != null) {
-                try {
-                    mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
-                            mCaptureCallback, mBackgroundHandler);
-                } catch (CameraAccessException e) {
-                    mAutoFocus = !mAutoFocus; // Revert
-                }
-            }
-        }
     }
 
     String paraseResult(TextResult[] result) {
@@ -1030,26 +895,6 @@ public class Camera2BasicFragment extends Fragment
 
         }
         return strResult;
-    }
-
-    void setZoom(double zoom_level) {
-        float maxZoom = (mCameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM)) * 10;
-        Rect rectActiveArraySize = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-        double minW = rectActiveArraySize.width() * 1.0 / maxZoom;
-        double minH = rectActiveArraySize.height() * 1.0 / maxZoom;
-        double difW = rectActiveArraySize.width() - minW;
-        double difH = rectActiveArraySize.height() - minH;
-        int cropW = (int) (difW / 100 * zoom_level);
-        int cropH = (int) (difH / 100 * zoom_level);
-        cropW -= cropW & 3;
-        cropH -= cropH & 3;
-        Rect zoom = new Rect(cropW, cropH, rectActiveArraySize.width() - cropW, rectActiveArraySize.height() - cropH);
-        mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, zoom);
-        try {
-            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
     }
 
     void saveYuvDataToLocalFile(byte[] data, int width, int height) {
