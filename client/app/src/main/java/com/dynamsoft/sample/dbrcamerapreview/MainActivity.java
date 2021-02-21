@@ -2,6 +2,7 @@ package com.dynamsoft.sample.dbrcamerapreview;
 
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -14,6 +15,9 @@ import android.view.WindowManager;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.dynamsoft.dbr.BarcodeReader;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private BarcodeReader mbarcodeReader;
     private DBRCache mCache;
     private boolean isTorchOn;
+
+    Switch flashControl;
+    CameraManager cameraManager;
 
 
     @Override
@@ -218,38 +225,72 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onFlash(View view) {
         final String cameraId = "0";
-        boolean isFlashSupported;
+//        boolean isFlashSupported;
 
         // Create the CameraManger instance by getting the Camera Service
-        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        flashControl = findViewById(R.id.switchFlashLight);
+//        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
 
-        try {
-            // Get Camera Characteristics
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+        // Initial Checking
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)) {
+            if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                Toast.makeText(MainActivity.this, "This device has flash", Toast.LENGTH_SHORT).show();
+                flashControl.setEnabled(true);
 
-            // Check if flash unit is available
-            isFlashSupported = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+            } else {
+                Toast.makeText(MainActivity.this, "This device has no flash", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "This device has no camera", Toast.LENGTH_SHORT).show();
+        }
 
-
-            System.out.println("CAMERA: " + cameraId);
-            System.out.println("FLASH: " + isFlashSupported);
-
-
-            // If flash is enabled and flash is off -> turn on flash
-            if (isFlashSupported) {
-                if (this.isTorchOn) {
-                    this.isTorchOn = false;
-                    manager.setTorchMode(cameraId, false);
-                } else {
-                    this.isTorchOn = true;
-                    manager.setTorchMode(cameraId, true);
+        flashControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+                    if (isChecked) {
+                        cameraManager.setTorchMode(cameraId, true);
+                        flashControl.setText("Flash OFF");
+                    } else {
+                        cameraManager.setTorchMode(cameraId, false);
+                        flashControl.setText("Flash ON");
+                    }
+                } catch (CameraAccessException e) {
+                    System.out.println("Whoopsy daisy, camera is not working: ");
+                    e.printStackTrace();
                 }
             }
+        });
 
 
-        } catch (CameraAccessException e) {
-            System.out.println("Whoopsy daisy, camera is not working: " + e);
-        }
+//        try {
+//            // Get Camera Characteristics
+//            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
+//
+//            // Check if flash unit is available
+//            isFlashSupported = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+//
+//
+//            System.out.println("CAMERA: " + cameraId);
+//            System.out.println("FLASH: " + isFlashSupported);
+//
+//
+//            // If flash is enabled and flash is off -> turn on flash
+//            if (isFlashSupported) {
+//                if (this.isTorchOn) {
+//                    this.isTorchOn = false;
+//                    cameraManager.setTorchMode(cameraId, false);
+//                } else {
+//                    this.isTorchOn = true;
+//                    cameraManager.setTorchMode(cameraId, true);
+//                }
+//            }
+//
+//
+//        } catch (CameraAccessException e) {
+//            System.out.println("Whoopsy daisy, camera is not working: " + e);
+//        }
 
         System.out.println("Flashlight - #11 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/11");
     }
