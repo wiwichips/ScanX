@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         try {
-            mbarcodeReader = new BarcodeReader("t0068MgAAACquj133Eq/dO8e++8vZnJoxnoBQt7war3uxkJrf6f7pbI12H1a2vxoCyEQvQvjcZH9UrfqDHfbYYFpcwVAvASA=");
+            mbarcodeReader = new BarcodeReader("t0075xQAAAHEp3EHnmw/d1FN1thT5BC0YC7yVwjNTzBVktQjx2PUQn0B4FJZNGPw/Op37Qyk83WJtoBeXi+40KhX932uBuNYOHQMYcSmO");
 //            Use license 2.0 init BarcodeReader
 //            mbarcodeReader = new BarcodeReader();
 //            DMLTSConnectionParameters parameters = new DMLTSConnectionParameters();
