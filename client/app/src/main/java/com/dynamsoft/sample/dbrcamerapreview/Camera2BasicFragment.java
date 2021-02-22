@@ -72,7 +72,6 @@ import com.dynamsoft.dbr.IntermediateResult;
 import com.dynamsoft.dbr.LocalizationResult;
 import com.dynamsoft.dbr.TextResult;
 import com.dynamsoft.sample.dbrcamerapreview.util.AutoFocusHelper;
-import com.dynamsoft.sample.dbrcamerapreview.util.CameraConstants;
 import com.dynamsoft.sample.dbrcamerapreview.util.CameraUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -89,7 +88,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.CAMERA_SERVICE;
-import static com.dynamsoft.sample.dbrcamerapreview.util.CameraConstants.CAMERA_BACK;
 
 public class Camera2BasicFragment extends Fragment
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -683,10 +681,10 @@ public class Camera2BasicFragment extends Fragment
 
                 ImageData imageData = (ImageData) msg.obj;
                 try {
-                    TextResult[] results = mMainActivity.getMainBarcdoeReader().decodeBuffer(imageData.mBytes, imageData.mWidth, imageData.mHeight, imageData.mStride, EnumImagePixelFormat.IPF_NV21, "");
+                    TextResult[] results = mMainActivity.getMainBarcodeReader().decodeBuffer(imageData.mBytes, imageData.mWidth, imageData.mHeight, imageData.mStride, EnumImagePixelFormat.IPF_NV21, "");
                     boolean bTempCropContains = false;
-                    if (mMainActivity.getMainBarcdoeReader().getIntermediateResults().length >= 1) {
-                        IntermediateResult[] intermediateResults = mMainActivity.getMainBarcdoeReader().getIntermediateResults();
+                    if (mMainActivity.getMainBarcodeReader().getIntermediateResults().length >= 1) {
+                        IntermediateResult[] intermediateResults = mMainActivity.getMainBarcodeReader().getIntermediateResults();
                         LocalizationResult[] localizationResults = (LocalizationResult[]) intermediateResults[0].results;
                         for (LocalizationResult result : localizationResults) {
                             com.dynamsoft.dbr.Point[] points = result.resultPoints;
