@@ -594,7 +594,7 @@ public class Camera2BasicFragment extends Fragment
                 int boxTop = (h - nQrViewH) / 2;
                 if (boxLeft >= 0 && boxTop >= 0) {
                     mQrCropRect = new Rect(boxLeft, boxTop, boxLeft + nQrViewW, boxTop + nQrViewH);
-                    mQrView.reSetboxview(mQrCropRect.left, mQrCropRect.top, mQrCropRect.width(), mQrCropRect.height());
+                    mQrView.resetBoxView(mQrCropRect.left, mQrCropRect.top, mQrCropRect.width(), mQrCropRect.height());
                 }
 
                 return;

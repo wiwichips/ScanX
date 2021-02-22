@@ -174,27 +174,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this@MainActivity, PopUp::class.java))
     }
 
-    // This method is the event listener for the flashlight button
-    //    @RequiresApi(api = Build.VERSION_CODES.M)
-    //    public void onFlash(View view) {
-    //        // Create the CameraManger instance by getting the Camera Service
-    //        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-    //
-    //        try {
-    //            // Get Camera Characteristics
-    //            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(CAMERA_BACK);
-    //
-    //            // If flash is enabled, switch on/off
-    //            boolean isAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-    //            if (isAvailable) {
-    //                //cameraManager.setTorchMode(CAMERA_BACK, !isTorchOn);
-    //                isTorchOn = !this.isTorchOn;
-    //            }
-    //        } catch (CameraAccessException e) {
-    //            System.out.println(e.getMessage());
-    //        }
-    //    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun onFlash(view: View?) {
         cameraFragment.onFlash(view)
