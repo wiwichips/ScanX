@@ -3,6 +3,7 @@ package com.dynamsoft.sample.dbrcamerapreview;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.CaptureRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -28,13 +29,13 @@ import com.dynamsoft.dbr.EnumIntermediateResultType;
 import com.dynamsoft.dbr.PublicRuntimeSettings;
 import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache;
 
+import static com.dynamsoft.sample.dbrcamerapreview.util.CameraConstants.CAMERA_BACK;
+
 public class MainActivity extends AppCompatActivity {
     private BarcodeReader mbarcodeReader;
     private DBRCache mCache;
     private boolean isTorchOn;
-    private boolean isAvailable;
-    CameraManager cameraManager;
-
+    private Camera2BasicFragment cameraFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (null == savedInstanceState) {
+            cameraFragment = Camera2BasicFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
+                    .replace(R.id.container, cameraFragment)
                     .commit();
         }
     }
@@ -222,47 +224,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // This method is the event listener for the flashlight button
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    public void onFlash(View view) {
+//        // Create the CameraManger instance by getting the Camera Service
+//        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+//
+//        try {
+//            // Get Camera Characteristics
+//            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(CAMERA_BACK);
+//
+//            // If flash is enabled, switch on/off
+//            boolean isAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+//            if (isAvailable) {
+//                //cameraManager.setTorchMode(CAMERA_BACK, !isTorchOn);
+//                isTorchOn = !this.isTorchOn;
+//            }
+//        } catch (CameraAccessException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onFlash(View view) {
-        final String cameraId = "0";
-        boolean isFlashSupported;
-
-        // Create the CameraManger instance by getting the Camera Service
-        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-
-        try {
-            // Get Camera Characteristics
-            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
-
-            // Check if flash unit is available
-            this.isAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-
-
-            System.out.println("CAMERA: " + cameraId);
-            System.out.println("FLASH: " + this.isAvailable);
-
-
-            // If flash is enabled and flash is off -> turn on flash
-            if (this.isAvailable) {
-                if (this.isTorchOn) {
-                    this.isTorchOn = false;
-                    cameraManager.setTorchMode(cameraId, false);
-                } else {
-                    this.isTorchOn = true;
-                    cameraManager.setTorchMode(cameraId, true);
-                }
-            }
-
-
-        } catch (CameraAccessException e) {
-            System.out.println("Whoopsy daisy, camera is not working: " + e);
-        }
-
-        System.out.println("Flashlight - #11 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/11");
+        cameraFragment.onFlash(view);
     }
 
     public void onInventory(View view) {
         // This method is the event listener for the inventory button
     }
-
 }
