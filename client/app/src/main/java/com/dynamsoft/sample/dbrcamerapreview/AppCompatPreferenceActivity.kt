@@ -4,9 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.support.annotation.LayoutRes
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatDelegate
-import android.support.v7.widget.Toolbar
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,79 +14,75 @@ import android.view.ViewGroup
  * to be used with AppCompat.
  */
 abstract class AppCompatPreferenceActivity : PreferenceActivity() {
-    private var mDelegate: AppCompatDelegate? = null
+
+    private lateinit var mDelegate: AppCompatDelegate
+    private var inited = false
+    private val delegate: AppCompatDelegate
+        get() {
+            if (!inited) {
+                mDelegate = AppCompatDelegate.create(this, null)
+                inited = true
+            }
+            return mDelegate
+        }
+
     override fun onCreate(savedInstanceState: Bundle) {
-        delegate!!.installViewFactory()
-        delegate!!.onCreate(savedInstanceState)
+        delegate.installViewFactory()
+        delegate.onCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle) {
         super.onPostCreate(savedInstanceState)
-        delegate!!.onPostCreate(savedInstanceState)
-    }
-
-    val supportActionBar: ActionBar?
-        get() = delegate!!.supportActionBar
-
-    fun setSupportActionBar(toolbar: Toolbar?) {
-        delegate!!.setSupportActionBar(toolbar)
+        delegate.onPostCreate(savedInstanceState)
     }
 
     override fun getMenuInflater(): MenuInflater {
-        return delegate!!.menuInflater
+        return delegate.menuInflater
     }
 
     override fun setContentView(@LayoutRes layoutResID: Int) {
-        delegate!!.setContentView(layoutResID)
+        delegate.setContentView(layoutResID)
     }
 
     override fun setContentView(view: View) {
-        delegate!!.setContentView(view)
+        delegate.setContentView(view)
     }
 
     override fun setContentView(view: View, params: ViewGroup.LayoutParams) {
-        delegate!!.setContentView(view, params)
+        delegate.setContentView(view, params)
     }
 
     override fun addContentView(view: View, params: ViewGroup.LayoutParams) {
-        delegate!!.addContentView(view, params)
+        delegate.addContentView(view, params)
     }
 
     override fun onPostResume() {
         super.onPostResume()
-        delegate!!.onPostResume()
+        delegate.onPostResume()
     }
 
     override fun onTitleChanged(title: CharSequence, color: Int) {
         super.onTitleChanged(title, color)
-        delegate!!.setTitle(title)
+        delegate.setTitle(title)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        delegate!!.onConfigurationChanged(newConfig)
+        delegate.onConfigurationChanged(newConfig)
     }
 
     override fun onStop() {
         super.onStop()
-        delegate!!.onStop()
+        delegate.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        delegate!!.onDestroy()
+        delegate.onDestroy()
     }
 
     override fun invalidateOptionsMenu() {
-        delegate!!.invalidateOptionsMenu()
+        delegate.invalidateOptionsMenu()
     }
-
-    private val delegate: AppCompatDelegate?
-        get() {
-            if (mDelegate == null) {
-                mDelegate = AppCompatDelegate.create(this, null)
-            }
-            return mDelegate
-        }
 }
