@@ -1,12 +1,25 @@
 package com.dynamsoft.sample.dbrcamerapreview;
 
 import android.content.Intent;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.camera2.CaptureRequest;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.dynamsoft.dbr.BarcodeReader;
 import com.dynamsoft.dbr.EnumBarcodeFormat;
@@ -16,10 +29,13 @@ import com.dynamsoft.dbr.EnumIntermediateResultType;
 import com.dynamsoft.dbr.PublicRuntimeSettings;
 import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache;
 
+import static com.dynamsoft.sample.dbrcamerapreview.util.CameraConstants.CAMERA_BACK;
+
 public class MainActivity extends AppCompatActivity {
     private BarcodeReader mbarcodeReader;
     private DBRCache mCache;
-
+    private boolean isTorchOn;
+    private Camera2BasicFragment cameraFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (null == savedInstanceState) {
+            cameraFragment = Camera2BasicFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
+                    .replace(R.id.container, cameraFragment)
                     .commit();
         }
     }
@@ -165,5 +182,74 @@ public class MainActivity extends AppCompatActivity {
 
     public BarcodeReader getMainBarcdoeReader() {
         return mbarcodeReader;
+    }
+
+
+    /**
+     * Event listeners for main page buttons
+     */
+
+    public void onScan(View view) {
+        // This method is the event listener for the scan button
+        System.out.println("Scan - #7 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/7");
+
+        /*
+         * TODO: Delete this comment after it is implemented
+         *
+         * This comment describes the code that will be written at a later date. This code will
+         * likely be contained in separate classes, but the general logic flow will be as follows
+         *
+         * Make a request to the backend to see if there is an entry in the db for the barcode
+         *
+         * If there is not an entry:
+         *      prompt the user to enter the name of the product and the quantity to add to the db
+         *
+         * Else, if there is an entry:
+         *      Make a request to the backend to get the info and display it in the page
+         *
+         *      If the user edits the quantity, make a request to the backend that changes the
+         *      quantity
+         */
+
+        // Make a request to the backend to see if there is an entry in the db for the barcode
+        // ... get (user, barcodeId) ...
+
+        // If there is not an entry,
+        // ... if (isExist == false) ...
+        // ... startActivity(new Intent(MainActivity.this, PopUpCreate.class));
+
+        // Else, if there is an entry
+        // ... else ...
+        startActivity(new Intent(MainActivity.this, PopUp.class));
+    }
+
+    // This method is the event listener for the flashlight button
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    public void onFlash(View view) {
+//        // Create the CameraManger instance by getting the Camera Service
+//        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+//
+//        try {
+//            // Get Camera Characteristics
+//            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(CAMERA_BACK);
+//
+//            // If flash is enabled, switch on/off
+//            boolean isAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+//            if (isAvailable) {
+//                //cameraManager.setTorchMode(CAMERA_BACK, !isTorchOn);
+//                isTorchOn = !this.isTorchOn;
+//            }
+//        } catch (CameraAccessException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onFlash(View view) {
+        cameraFragment.onFlash(view);
+    }
+
+    public void onInventory(View view) {
+        // This method is the event listener for the inventory button
     }
 }

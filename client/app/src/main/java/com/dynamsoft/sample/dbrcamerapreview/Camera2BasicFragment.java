@@ -43,11 +43,13 @@ import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -86,12 +88,16 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Context.CAMERA_SERVICE;
+import static com.dynamsoft.sample.dbrcamerapreview.util.CameraConstants.CAMERA_BACK;
+
 public class Camera2BasicFragment extends Fragment
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     static final int[] gZoomRatio = {
             10, 100, 114, 132, 151, 174, 190, 210, 221, 230, 249, 268, 283, 295, 308, 322, 336
     };
+
     /**
      * Conversion from screen rotation to JPEG orientation.
      */
@@ -470,7 +476,7 @@ public class Camera2BasicFragment extends Fragment
 
     private void setUpCameraOutputs(int width, int height) {
         Activity activity = getActivity();
-        CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) activity.getSystemService(CAMERA_SERVICE);
         try {
             for (String cameraId : manager.getCameraIdList()) {
                 mCameraCharacteristics
@@ -593,7 +599,6 @@ public class Camera2BasicFragment extends Fragment
                     mQrView.reSetboxview(mQrCropRect.left, mQrCropRect.top, mQrCropRect.width(), mQrCropRect.height());
                 }
 
-
                 return;
             }
         } catch (CameraAccessException e) {
@@ -618,20 +623,17 @@ public class Camera2BasicFragment extends Fragment
         setUpCameraOutputs(width, height);
         configureTransform(width, height);
         Activity activity = getActivity();
-        CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) activity.getSystemService(CAMERA_SERVICE);
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
-
         } catch (CameraAccessException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
         }
-
-
     }
 
     /**
@@ -826,6 +828,27 @@ public class Camera2BasicFragment extends Fragment
         }
     }
 
+
+    private boolean isTorchOn = false;
+
+    // This method is the event listener for the flashlight button
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onFlash(View view) {
+        try {
+            if (isTorchOn) {
+                mPreviewRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
+                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, null);
+                isTorchOn = false;
+            } else {
+                mPreviewRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, null);
+                isTorchOn = true;
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Configures the necessary {@link Matrix} transformation to `mTextureView`.
      * This method should be called after the camera preview size is determined in
@@ -861,8 +884,8 @@ public class Camera2BasicFragment extends Fragment
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
         if (mFlashSupported) {
-            requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                    CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+            //requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+            //CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
     }
 
