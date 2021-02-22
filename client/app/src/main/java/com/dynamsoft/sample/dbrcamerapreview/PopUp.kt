@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 
 class PopUp : Activity() {
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popupwindow)
         val dm = DisplayMetrics()

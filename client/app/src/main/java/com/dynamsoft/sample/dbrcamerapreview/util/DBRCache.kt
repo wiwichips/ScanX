@@ -41,7 +41,7 @@ class DBRCache private constructor(cacheDir: File, max_size: Long, max_count: In
         return try {
             `in` = BufferedReader(FileReader(file))
             var readString = ""
-            var currentLine: String
+            var currentLine: String?
             while (`in`.readLine().also { currentLine = it } != null) {
                 readString += currentLine
             }
