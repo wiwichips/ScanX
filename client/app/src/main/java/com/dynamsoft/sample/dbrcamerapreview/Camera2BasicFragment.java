@@ -84,6 +84,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -699,7 +700,7 @@ public class Camera2BasicFragment extends Fragment
                             }
                             Rect frameRegion = new Rect(leftX, leftY, rightX, rightY);
                             Rect frameSize = new Rect(0, 0, outputPreviewSize.getWidth(), outputPreviewSize.getHeight());
-                            Rect viewRegion = CameraUtil.ConvertFrameRegionToViewRegion(frameRegion, frameSize, CameraUtil.getOrientationDisplayOffset(getActivity(), mSensorOrientation), new Size(mTextureView.getWidth(), mTextureView.getHeight()));
+                            Rect viewRegion = CameraUtil.INSTANCE.convertFrameRegionToViewRegion(frameRegion, frameSize, CameraUtil.INSTANCE.getOrientationDisplayOffset(Objects.requireNonNull(getActivity()), mSensorOrientation), new Size(mTextureView.getWidth(), mTextureView.getHeight()));
 
                             if (mQrCropRect.contains(viewRegion) || viewRegion.contains(mQrCropRect) || mQrCropRect.intersect(mQrCropRect)) {
                                 if (mQrCropRect.contains(viewRegion)) {
@@ -716,13 +717,11 @@ public class Camera2BasicFragment extends Fragment
                         mZoomState = 0;//zoom original
                     }
                     if (results != null && results.length > 0) {
-                        String str = paraseResult(results);
-                        message.obj = str;
-                        mHandler.sendMessage(message);
+                        message.obj = parseResult(results);
                     } else {
                         message.obj = "";
-                        mHandler.sendMessage(message);
                     }
+                    mHandler.sendMessage(message);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -782,7 +781,7 @@ public class Camera2BasicFragment extends Fragment
             //todo:set the auto focus region and auto exposure region
             int width = mPreviewSize.getWidth() * 3 / 4;
             int height = mPreviewSize.getHeight() * 3 / 4;
-            int boxWidth = (width < height) ? width : height;
+            int boxWidth = Math.min(width, height);
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{new MeteringRectangle(new Point((mPreviewSize.getWidth() - boxWidth) / 2
                     , (mPreviewSize.getHeight() - boxWidth) / 2), new Size(boxWidth, boxWidth), 1000)});
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{new MeteringRectangle(new Point((mPreviewSize.getWidth() - boxWidth) / 2
@@ -802,9 +801,6 @@ public class Camera2BasicFragment extends Fragment
                             // When the session is ready, we start displaying the preview.
                             mCaptureSession = cameraCaptureSession;
                             try {
-                                // Flash is automatically enabled when necessary.
-                                setAutoFlash(mPreviewRequestBuilder);
-
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder.build();
                                 mCaptureSession.setRepeatingRequest(mPreviewRequest,
@@ -880,13 +876,6 @@ public class Camera2BasicFragment extends Fragment
         mTextureView.setTransform(matrix);
     }
 
-    private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
-        if (mFlashSupported) {
-            //requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-            //CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-        }
-    }
-
     /**
      * Check if the flash is supported.
      */
@@ -895,10 +884,10 @@ public class Camera2BasicFragment extends Fragment
         mFlashSupported = available == null ? false : available;
     }
 
-    String paraseResult(TextResult[] result) {
-        String strResult = "";
+    String parseResult(TextResult[] result) {
+        StringBuilder strResult = new StringBuilder();
         if (result == null || result.length == 0) {
-            return strResult;
+            return strResult.toString();
         }
 
         for (int i = 0; i < result.length; i++) {
@@ -910,12 +899,12 @@ public class Camera2BasicFragment extends Fragment
             }
             strCurResult += "\n" + result[i].barcodeText;
             if (i == 0)
-                strResult = strCurResult;
+                strResult = new StringBuilder(strCurResult);
             else
-                strResult += "\n\n" + strCurResult;
+                strResult.append("\n\n").append(strCurResult);
 
         }
-        return strResult;
+        return strResult.toString();
     }
 
     void saveYuvDataToLocalFile(byte[] data, int width, int height) {
@@ -927,7 +916,7 @@ public class Camera2BasicFragment extends Fragment
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             yuvimage.compressToJpeg(new Rect(0, 0, width, height), 80, baos);
             Bitmap bmp = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.toByteArray().length);
-            File mFile = new File(getPictureFilePath(getActivity()));
+            File mFile = new File(getPictureFilePath(Objects.requireNonNull(getActivity())));
 
             output = new FileOutputStream(mFile);
             bmp.compress(Bitmap.CompressFormat.JPEG, 85, output);
@@ -1029,7 +1018,7 @@ public class Camera2BasicFragment extends Fragment
         }
     }
 
-    private class ImageData {
+    private static class ImageData {
         private final int mWidth;
         private final int mHeight;
         private final int mStride;

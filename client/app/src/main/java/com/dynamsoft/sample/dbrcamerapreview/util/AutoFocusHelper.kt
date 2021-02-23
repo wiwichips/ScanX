@@ -10,7 +10,7 @@ object AutoFocusHelper {
     /**
      * camera2 API metering region weight.
      */
-    private val CAMERA2_REGION_WEIGHT = CameraUtil.lerp(
+    private val CAMERA2_REGION_WEIGHT = CameraUtil.linearInterpolation(
             MeteringRectangle.METERING_WEIGHT_MIN.toFloat(),
             MeteringRectangle.METERING_WEIGHT_MAX.toFloat(),
             CameraConstants.METERING_REGION_FRACTION,
