@@ -268,8 +268,8 @@ public class Camera2BasicFragment extends Fragment
      */
     private boolean mAutoFocus = true;
     private Rect mCropRegion;
-    private MeteringRectangle[] mAFRegions = AutoFocusHelper.getZeroWeightRegion();
-    private MeteringRectangle[] mAERegions = AutoFocusHelper.getZeroWeightRegion();
+    private MeteringRectangle[] mAFRegions = AutoFocusHelper.INSTANCE.getZeroWeightRegion();
+    private MeteringRectangle[] mAERegions = AutoFocusHelper.INSTANCE.getZeroWeightRegion();
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its state.
      */
