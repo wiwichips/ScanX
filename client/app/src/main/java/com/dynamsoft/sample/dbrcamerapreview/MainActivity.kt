@@ -17,8 +17,7 @@ class MainActivity : AppCompatActivity() {
     var mainBarcodeReader: BarcodeReader? = null
         private set
     private lateinit var mCache: DBRCache
-    private lateinit var cameraFragment: Camera2BasicFragment
-
+    private val cameraFragment: Camera2BasicFragment = Camera2BasicFragment.newInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +56,6 @@ class MainActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         if (null == savedInstanceState) {
-            cameraFragment = Camera2BasicFragment.newInstance()
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, cameraFragment)
                     .commit()
