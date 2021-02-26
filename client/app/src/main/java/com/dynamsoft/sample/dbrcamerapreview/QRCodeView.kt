@@ -38,6 +38,7 @@ class QRCodeView : RelativeLayout {
         initialize(context, attrs, defStyleAttr)
     }
 
+    @Suppress("DEPRECATION") // Deprecated methods only used in old API versions
     private fun initialize(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         inflate(context, R.layout.layout_qr_code_view, this)
         val resources = resources

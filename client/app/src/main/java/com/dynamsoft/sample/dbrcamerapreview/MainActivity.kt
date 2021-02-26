@@ -36,19 +36,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         mCache = DBRCache[this]
-        mCache.put("linear", "1")
-        mCache.put("qrcode", "1")
-        mCache.put("pdf417", "1")
-        mCache.put("matrix", "1")
-        mCache.put("aztec", "0")
-        mCache.put("databar", "0")
-        mCache.put("patchcode", "0")
-        mCache.put("maxicode", "0")
-        mCache.put("microqr", "0")
-        mCache.put("micropdf417", "0")
-        mCache.put("gs1compositecode", "0")
-        mCache.put("postalcode", "0")
-        mCache.put("dotcode", "0")
+        mCache["linear"] = "1"
+        mCache["qrcode"] = "1"
+        mCache["pdf417"] = "1"
+        mCache["matrix"] = "1"
+        mCache["aztec"] = "0"
+        mCache["databar"] = "0"
+        mCache["patchcode"] = "0"
+        mCache["maxicode"] = "0"
+        mCache["microqr"] = "0"
+        mCache["micropdf417"] = "0"
+        mCache["gs1compositecode"] = "0"
+        mCache["postalcode"] = "0"
+        mCache["dotcode"] = "0"
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
