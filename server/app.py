@@ -8,20 +8,21 @@ from flask import Flask, render_template, jsonify, request, session
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = b'A+jWl4h6wMkR7LcWBm85AO8q'
-
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
 
 def get_db() -> MySQLdb.Connection:
-    db = MySQLdb.connect(host='<hostnameOrIpOfOurDataBase>',
-                         user='<username>',
-                         passwd='<password>',
-                         db='<databseName>')
+    db = MySQLdb.connect(host='127.0.0.1',
+                         user='app',
+                         passwd='3EQCjVrNQ9Z9Ysvf',
+                         db='scanx')
     return db
 
 
 def check_db_table():
     # Makes sure the table exists and has the right columns
     db = get_db()
-    db.cursor().execute('CREATE TABLE IF NOT EXISTS `users` (`name` TINYTEXT, `password` TINYTEXT)')
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`ID_OF_SCANNER` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
     db.commit()
     db.close()
 
@@ -32,7 +33,32 @@ check_db_table()
 # Serves the main HTML page
 @app.route('/')
 def index(name=None):
-    return render_template('index.html', name=name)
+    return render_template('', name=name)
+
+@app.route('/getinfo')
+def getdemoData():
+    serial = str(request.args.get('serial'))
+    db = get_db()
+    db_cursor = db.cursor()
+    print(serial)
+    if(serial.isdigit() == False):
+       return '{Error:\"Invalid serial\"}', 400
+    if db_cursor.execute('SELECT * FROM Inventory WHERE SERIAL_NUMBER=%s', (serial,)) > 0:
+        entry = db_cursor.fetchall()[0]
+        idOfScanner = entry[0]
+        serial = entry[1]
+        title = entry[2]
+        QOH = entry[3]
+        MQBN = entry[4]
+        # Item found
+        db.close()
+        return jsonify(ID_OF_SCANNER=idOfScanner, SERIAL_NUMBER=serial,PRODUCT_TITLE=title,QUANTITY_ON_HAND=QOH,MIN_QUANTITY_BEFORE_NOTIFY=MQBN), 200
+    else:
+        return '{Error:\"Serial not in database\"}',400
+    
+        
+    
+    return "1"
 
 # example of using sessions if we plan on it in the future 
 """
@@ -41,7 +67,7 @@ def login():
     request_json = request.get_json(force=True)
     db = get_db()
     db_cursor = db.cursor()
-
+    
     # Try and find the user in the database
     if db_cursor.execute('SELECT * FROM users WHERE username=%s', (request_json['username'],)) > 0:
         if db_cursor.fetchall()[0][1] != request_json['password']:
