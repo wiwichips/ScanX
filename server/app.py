@@ -66,22 +66,40 @@ def getdemoData():
 #     except IndexError:
 #         print("Generating new scanner ID")
 
+# If input is invalid, returns the invalid item. Otherwise returns true.
+def validate_create_edit_input(item):
+    # Input validation
+    if not isinstance(item['barcodeID'], str):
+        return item['barcodeID'], 'string'
+    if not isinstance(item['name'], str):
+        return item['name'], 'string'
+    if not isinstance(item['price'], float):
+        return item['price'], 'float'
+    if not isinstance(item['minStock'], int):
+        return item['minStock'], 'int'
+    if not isinstance(item['count'], int):
+        return item['count'], 'int'
+    return True
+    # if not isinstance(item['barcodeID'], str):
+    #     return jsonify(message="barcodeID is not a string."), 400
+    # if not isinstance(item['name'], str):
+    #     return jsonify(message="name is not a string."), 400
+    # if not isinstance(item['price'], float):
+    #     return jsonify(message="price is not a float."), 400
+    # if not isinstance(item['minStock'], int):
+    #     return jsonify(message="minStock is not an int."), 400
+    # if not isinstance(item['count'], int):
+    #     return jsonify(message="count is not an int."), 400
+
 
 @app.route("/createItem", methods=['POST'])
 def create_item():
     item = request.get_json()
 
     # Input validation
-    if not isinstance(item['barcodeID'], str):
-        return jsonify(message="barcodeID is not a string."), 400
-    if not isinstance(item['name'], str):
-        return jsonify(message="name is not a string."), 400
-    if not isinstance(item['price'], float):
-        return jsonify(message="price is not a float."), 400
-    if not isinstance(item['minStock'], int):
-        return jsonify(message="minStock is not an int."), 400
-    if not isinstance(item['count'], int):
-        return jsonify(message="count is not an int."), 400
+    is_item_valid = validate_create_edit_input(item)
+    if is_item_valid is not True:
+        return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
 
     db = get_db()
     db_cursor = db.cursor()
@@ -110,8 +128,36 @@ def create_item():
 
 @app.route("/editItem", methods=['PUT'])
 def edit_item():
+    item = request.get_json()
 
-    return 500
+    # Input validation
+    is_item_valid = validate_create_edit_input(item)
+    if is_item_valid is not True:
+        return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
+
+    db = get_db()
+    db_cursor = db.cursor()
+
+    # scannerID = get_scanner_ID()
+    barcodeID = item['barcodeID']
+    name = item['name']
+    price = item['price']
+    minStock = item['minStock']
+    count = item['count']
+
+    try:
+        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (barcodeID,)) > 0:
+            db_cursor.execute('UPDATE inventory SET SERIAL_NUMBER=%s, PRODUCT_TITLE=%s, PRICE=%s, MIN_QUANTITY_BEFORE_NOTIFY=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (barcodeID, name, price, minStock, count, barcodeID,))
+            # TODO: Scanner ID
+            # db_cursor.execute('INSERT INTO inventory(ID_OF_SCANNER,SERIAL_NUMBER,PRODUCT_TITLE,PRICE,MIN_QUANTITY_BEFORE_NOTIFY,QUANTITY_ON_HAND) VALUES(%s,%s,%s,%s,%s,%s)', (scannerID, barcodeID, name, price, minStock, count,))
+            db.commit()
+            db.close()
+            return {}, 200
+        else:
+            return jsonify(message="Item with barcode `" + barcodeID + "` does not exist exists. Use `createItem` endpoint first."), 400
+    except MySQLdb.Error as e:
+        db.close()
+        return jsonify(message=e.args), 500
 
 
 # example of using sessions if we plan on it in the future
