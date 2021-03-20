@@ -59,13 +59,6 @@ def getdemoData():
         return '{Error:\"Serial not in database\"}',400
 
 
-# def get_scanner_ID():
-#     try:
-#         if session['barcodeID']:
-#             return session['barcodeID']
-#     except IndexError:
-#         print("Generating new scanner ID")
-
 # If input is invalid, returns the invalid item. Otherwise returns true.
 def validate_create_edit_input(item):
     # Input validation
@@ -80,16 +73,14 @@ def validate_create_edit_input(item):
     if not isinstance(item['count'], int):
         return item['count'], 'int'
     return True
-    # if not isinstance(item['barcodeID'], str):
-    #     return jsonify(message="barcodeID is not a string."), 400
-    # if not isinstance(item['name'], str):
-    #     return jsonify(message="name is not a string."), 400
-    # if not isinstance(item['price'], float):
-    #     return jsonify(message="price is not a float."), 400
-    # if not isinstance(item['minStock'], int):
-    #     return jsonify(message="minStock is not an int."), 400
-    # if not isinstance(item['count'], int):
-    #     return jsonify(message="count is not an int."), 400
+
+
+# Tries to get a user ID from the session
+def get_user_id():
+    if session['user_id']:
+        return session['user_id']
+    else:
+        raise Exception("No user ID in session.")
 
 
 @app.route("/createItem", methods=['POST'])
@@ -101,27 +92,24 @@ def create_item():
     if is_item_valid is not True:
         return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
 
+    try:
+        userID = get_user_id()
+    except:
+        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
     db = get_db()
     db_cursor = db.cursor()
 
-    # TODO: Scanner ID
-    # scannerID = get_scanner_ID()
-    barcodeID = item['barcodeID']
-    name = item['name']
-    price = item['price']
-    minStock = item['minStock']
-    count = item['count']
-
     try:
-        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (barcodeID,)) > 0:
-            return jsonify(message="Item with barcode `" + barcodeID + "` already exists. Use `editItem` endpoint."), 400
+        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (item['barcodeID'],)) > 0:
+            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` already exists. Use `editItem` endpoint."), 400
         else:
-            db_cursor.execute('INSERT INTO inventory(SERIAL_NUMBER,PRODUCT_TITLE,PRICE,MIN_QUANTITY_BEFORE_NOTIFY,QUANTITY_ON_HAND) VALUES(%s,%s,%s,%s,%s)', (barcodeID, name, price, minStock, count,))
-            # TODO: Scanner ID
+            db_cursor.execute('INSERT INTO inventory(USER_ID,SERIAL_NUMBER,PRODUCT_TITLE,PRICE,MIN_QUANTITY_BEFORE_NOTIFY,QUANTITY_ON_HAND) VALUES(%s,%s,%s,%s,%s,%s)', (userID, item['barcodeID'], item['name'], item['price'], item['minStock'], item['count'],))
             db.commit()
             db.close()
             return {}, 200
     except MySQLdb.Error as e:
+        db.rollback()
         db.close()
         return jsonify(message=e.args), 500
 
@@ -135,27 +123,24 @@ def edit_item():
     if is_item_valid is not True:
         return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
 
+    try:
+        userID = get_user_id()
+    except:
+        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
     db = get_db()
     db_cursor = db.cursor()
 
-    # TODO: Scanner ID
-    # scannerID = get_scanner_ID()
-    barcodeID = item['barcodeID']
-    name = item['name']
-    price = item['price']
-    minStock = item['minStock']
-    count = item['count']
-
     try:
-        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (barcodeID,)) > 0:
-            db_cursor.execute('UPDATE inventory SET SERIAL_NUMBER=%s, PRODUCT_TITLE=%s, PRICE=%s, MIN_QUANTITY_BEFORE_NOTIFY=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (barcodeID, name, price, minStock, count, barcodeID,))
-            # TODO: Scanner ID
+        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (item['barcodeID'],)) > 0:
+            db_cursor.execute('UPDATE inventory SET USER_ID=%s, SERIAL_NUMBER=%s, PRODUCT_TITLE=%s, PRICE=%s, MIN_QUANTITY_BEFORE_NOTIFY=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['barcodeID'], item['name'], item['price'], item['minStock'], item['count'], item['barcodeID'],))
             db.commit()
             db.close()
             return {}, 200
         else:
-            return jsonify(message="Item with barcode `" + barcodeID + "` does not exist. Use `createItem` endpoint first."), 400
+            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` does not exist. Use `createItem` endpoint first."), 400
     except MySQLdb.Error as e:
+        db.rollback()
         db.close()
         return jsonify(message=e.args), 500
 
@@ -170,24 +155,24 @@ def edit_stock():
     if not isinstance(item['count'], int):
         return jsonify(message='Item ' + item['count'] + ' was not of expected type `int`.'), 400
 
+    try:
+        userID = get_user_id()
+    except:
+        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
     db = get_db()
     db_cursor = db.cursor()
 
-    # TODO: Scanner ID
-    # scannerID = get_scanner_ID()
-    barcodeID = item['barcodeID']
-    count = item['count']
-
     try:
-        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (barcodeID,)) > 0:
-            db_cursor.execute('UPDATE inventory SET QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (count, barcodeID,))
-            # TODO: Scanner ID
+        if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (item['barcodeID'],)) > 0:
+            db_cursor.execute('UPDATE inventory SET USER_ID=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['count'], item['barcodeID'],))
             db.commit()
             db.close()
             return {}, 200
         else:
-            return jsonify(message="Item with barcode `" + barcodeID + "` does not exist. Use `createItem` endpoint first."), 400
+            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` does not exist. Use `createItem` endpoint first."), 400
     except MySQLdb.Error as e:
+        db.rollback()
         db.close()
         return jsonify(message=e.args), 500
 
