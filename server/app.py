@@ -23,7 +23,17 @@ def get_db() -> MySQLdb.Connection:
 def check_db_table():
     # Makes sure the table exists and has the right columns
     db = get_db()
-    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`ID_OF_SCANNER` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
+    db.cursor().execute('CREATE DATABASE IF NOT EXISTS `scanx`;')
+    db.cursor().execute('USE `scanx`;')
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (' +
+                        '`USER_ID` int(11) DEFAULT NULL,' +
+                        '`SERIAL_NUMBER` varchar(30) COLLATE utf8_bin DEFAULT NULL,' +
+                        '`PRODUCT_TITLE` varchar(255) COLLATE utf8_bin DEFAULT NULL,' +
+                        '`PRICE` decimal(65,2) DEFAULT NULL,' +
+                        '`QUANTITY_ON_HAND` int(11) DEFAULT NULL,' +
+                        '`MIN_QUANTITY_BEFORE_NOTIFY` int(11) DEFAULT NULL,' +
+                        '`LAST_UPDATE` datetime DEFAULT current_timestamp()' +
+                        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;')
     db.commit()
     db.close()
 
