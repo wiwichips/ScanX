@@ -102,10 +102,12 @@ def create_item():
     if is_item_valid is not True:
         return jsonify(message='Item ' + str(is_item_valid[0]) + ' was not of expected type ' + str(is_item_valid[1]) + '.'), 400
 
-    try:
-        userID = get_user_id()
-    except:
-        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+    # try:
+    #     userID = get_user_id()
+    # except:
+    #     return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
+    userID = -1
 
     db = get_db()
     db_cursor = db.cursor()
@@ -133,10 +135,12 @@ def edit_item():
     if is_item_valid is not True:
         return jsonify(message='Item ' + str(is_item_valid[0]) + ' was not of expected type ' + str(is_item_valid[1]) + '.'), 400
 
-    try:
-        userID = get_user_id()
-    except:
-        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+    # try:
+    #     userID = get_user_id()
+    # except:
+    #     return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
+    userID = -1
 
     db = get_db()
     db_cursor = db.cursor()
@@ -165,10 +169,12 @@ def edit_stock():
     if not isinstance(item['count'], int):
         return jsonify(message='Item ' + str(item['count']) + ' was not of expected type `int`.'), 400
 
-    try:
-        userID = get_user_id()
-    except:
-        return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+    # try:
+    #     userID = get_user_id()
+    # except:
+    #     return jsonify(message='Could not get a user ID. Try logging in first.'), 401
+
+    userID = -1
 
     db = get_db()
     db_cursor = db.cursor()
