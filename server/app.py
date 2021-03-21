@@ -100,7 +100,7 @@ def create_item():
     # Input validation
     is_item_valid = validate_create_edit_input(item)
     if is_item_valid is not True:
-        return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
+        return jsonify(message='Item ' + str(is_item_valid[0]) + ' was not of expected type ' + str(is_item_valid[1]) + '.'), 400
 
     try:
         userID = get_user_id()
@@ -112,7 +112,7 @@ def create_item():
 
     try:
         if db_cursor.execute('SELECT * FROM inventory WHERE SERIAL_NUMBER=%s', (item['barcodeID'],)) > 0:
-            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` already exists. Use `editItem` endpoint."), 400
+            return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` already exists. Use `editItem` endpoint."), 400
         else:
             db_cursor.execute('INSERT INTO inventory(USER_ID,SERIAL_NUMBER,PRODUCT_TITLE,PRICE,MIN_QUANTITY_BEFORE_NOTIFY,QUANTITY_ON_HAND) VALUES(%s,%s,%s,%s,%s,%s)', (userID, item['barcodeID'], item['name'], item['price'], item['minStock'], item['count'],))
             db.commit()
@@ -131,7 +131,7 @@ def edit_item():
     # Input validation
     is_item_valid = validate_create_edit_input(item)
     if is_item_valid is not True:
-        return jsonify(message='Item ' + is_item_valid[0] + ' was not of expected type ' + is_item_valid[1] + '.'), 400
+        return jsonify(message='Item ' + str(is_item_valid[0]) + ' was not of expected type ' + str(is_item_valid[1]) + '.'), 400
 
     try:
         userID = get_user_id()
@@ -148,7 +148,7 @@ def edit_item():
             db.close()
             return {}, 200
         else:
-            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` does not exist. Use `createItem` endpoint first."), 400
+            return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
     except MySQLdb.Error as e:
         db.rollback()
         db.close()
@@ -161,9 +161,9 @@ def edit_stock():
 
     # Input validation
     if not isinstance(item['barcodeID'], str):
-        return jsonify(message='Item ' + item['barcodeID'] + ' was not of expected type `string`.'), 400
+        return jsonify(message='Item ' + str(item['barcodeID']) + ' was not of expected type `string`.'), 400
     if not isinstance(item['count'], int):
-        return jsonify(message='Item ' + item['count'] + ' was not of expected type `int`.'), 400
+        return jsonify(message='Item ' + str(item['count']) + ' was not of expected type `int`.'), 400
 
     try:
         userID = get_user_id()
@@ -180,7 +180,7 @@ def edit_stock():
             db.close()
             return {}, 200
         else:
-            return jsonify(message="Item with barcode `" + item['barcodeID'] + "` does not exist. Use `createItem` endpoint first."), 400
+            return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
     except MySQLdb.Error as e:
         db.rollback()
         db.close()
