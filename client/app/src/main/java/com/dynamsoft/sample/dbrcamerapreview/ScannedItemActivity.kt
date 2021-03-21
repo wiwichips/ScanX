@@ -12,12 +12,16 @@ class ScannedItemActivity : AppCompatActivity() {
     private var editing = false
 
     private lateinit var barcode: String
-    private lateinit var editTexts: Map<String, EditText>
     private lateinit var editButton: Button
     private lateinit var cancelButton: Button
     private lateinit var saveButton: Button
     private lateinit var decrementButton: Button
     private lateinit var incrementButton: Button
+    private lateinit var nameEditText: EditText
+    private lateinit var priceEditText: EditText
+    private lateinit var notifyQuantityEditText: EditText
+    private lateinit var quantityEditText: EditText
+    private lateinit var editTexts: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +40,11 @@ class ScannedItemActivity : AppCompatActivity() {
     }
 
     private fun setEditTexts() {
-        editTexts = mapOf(
-                "name" to findViewById(R.id.itemName),
-                "price" to findViewById(R.id.itemPrice),
-                "notifyQuantity" to findViewById(R.id.itemNotificationQoH),
-                "quantity" to findViewById(R.id.itemQoH))
+        nameEditText = findViewById(R.id.itemName)
+        priceEditText = findViewById(R.id.itemPrice)
+        notifyQuantityEditText = findViewById(R.id.itemNotificationQoH)
+        quantityEditText = findViewById(R.id.itemQoH)
+        editTexts = arrayOf(nameEditText, priceEditText, notifyQuantityEditText, quantityEditText)
     }
 
     private fun setEditButton() {
@@ -53,12 +57,12 @@ class ScannedItemActivity : AppCompatActivity() {
 
     private fun onEdit() {
         editButton.text = getString(R.string.finishEditing)
-        editTexts.values.forEach { it.isEnabled = true }
+        editTexts.forEach { it.isEnabled = true }
     }
 
     private fun onFinishEdit() {
         editButton.text = getString(R.string.editItem)
-        editTexts.values.forEach { it.isEnabled = false }
+        editTexts.forEach { it.isEnabled = false }
     }
 
     private fun setCancelButton() {
@@ -81,7 +85,7 @@ class ScannedItemActivity : AppCompatActivity() {
     }
 
     private fun incrementQuantityEditText() {
-        editTexts["quantity"]?.apply {
+        quantityEditText.apply {
             text = Editable.Factory().newEditable(text.toString()
                     .let { if (length() == 0) "0" else it }
                     .toLong()
@@ -97,7 +101,7 @@ class ScannedItemActivity : AppCompatActivity() {
     }
 
     private fun decrementQuantityEditText() {
-        editTexts["quantity"]?.apply {
+        quantityEditText.apply {
             text = Editable.Factory().newEditable(text.toString()
                     .let { if (length() == 0) "0" else it }
                     .toLong()
