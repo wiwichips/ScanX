@@ -138,40 +138,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * Event listeners for main page buttons
      */
-    fun onScan(view: View?) {
-        // This method is the event listener for the scan button
-        println("Scan - #7 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/7")
-
-        /*
-         * TODO: Delete this comment after it is implemented
-         *
-         * This comment describes the code that will be written at a later date. This code will
-         * likely be contained in separate classes, but the general logic flow will be as follows
-         *
-         * Make a request to the backend to see if there is an entry in the db for the barcode
-         *
-         * If there is not an entry:
-         *      prompt the user to enter the name of the product and the quantity to add to the db
-         *
-         * Else, if there is an entry:
-         *      Make a request to the backend to get the info and display it in the page
-         *
-         *      If the user edits the quantity, make a request to the backend that changes the
-         *      quantity
-         */
-
-        // Make a request to the backend to see if there is an entry in the db for the barcode
-        // ... get (user, barcodeId) ...
-
-        // If there is not an entry,
-        // ... if (isExist == false) ...
-        // ... startActivity(new Intent(MainActivity.this, PopUpCreate.class));
-
-        // Else, if there is an entry
-        // ... else ...
-        startActivity(Intent(this@MainActivity, PopUp::class.java))
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun onFlash(view: View?) {
         cameraFragment.onFlash(view)
