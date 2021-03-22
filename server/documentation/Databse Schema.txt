@@ -1,0 +1,50 @@
+Users
+	USER_ID 
+		- Primary key
+		
+	ID number of the ScanX user
+		- Default implementation (our implementation) is a auto-incrementing number starting at 0
+		
+	USERNAME
+		- ScanX user username
+		
+	PASSWORD
+		- ScanX user password
+		- Stored as a salted and hashed value
+		
+	CREATE_DATE
+		- Auto-filled timestamp of when the row was created in the database
+
+Scans
+	SCAN_ID
+		- Primary key
+		- Auto-incrementing number, starting at 1
+		- Keeps track of the scan number
+		
+	BARCODE_ID
+		- Foreign key
+		- The value of a scanned barcode
+		- Contained in the Inventory table
+		
+	SCAN_TIME
+		- Timestamp of when the scan was received by the server
+
+Inventory
+	USER_ID
+		- ID number of the user that made the scan
+		
+	BARCODE_ID
+		- The value of the scanned barcode
+		
+	PRODUCT_TITLE
+		- Title of the scanned item
+			- Entered by user in app
+			
+	QUANTITY_ON_HAND
+		- Quantity of the scanned item in inventory
+		
+	MIN_QUANTITY_BEFORE_NOTIFY
+		- Quantity of the item needed before a notification is sent alerting stock levels
+		
+	LAST_UPDATE 
+		- The timestamp of when the inventory item was last edited
