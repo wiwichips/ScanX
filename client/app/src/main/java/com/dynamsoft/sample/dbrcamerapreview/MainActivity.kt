@@ -145,5 +145,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onInventory(view: View?) {
         // This method is the event listener for the inventory button
+        //Intent intent = new Intent(this@MainActivity, ScanList::class.java)
+        startActivity(Intent(this@MainActivity, ScanList::class.java))
     }
 }
