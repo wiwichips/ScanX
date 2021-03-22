@@ -1,15 +1,25 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.dynamsoft.sample.dbrcamerapreview.entity.Item
+import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.httpPut
+import org.json.JSONObject
+import com.github.kittinunf.result.Result
 
 class ScannedItemActivity : AppCompatActivity() {
 
     private var editing = false
+    private var itemExists = false
 
     private lateinit var barcode: String
     private lateinit var editButton: Button
@@ -28,15 +38,9 @@ class ScannedItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scanned_item)
         barcode = intent.getStringExtra("barcode")
         findViewById<TextView>(R.id.barcodeTitle).text = barcode
-        // TODO: API call to see if item already exists with this barcode ID.
-        //  If yes, populate EditTexts with appropriate info from Item object (class was made for this).
-        //  If not, start from scratch.
         setEditTexts()
-        setEditButton()
-        setCancelButton()
-        setSaveButton()
-        setIncrementButton()
-        setDecrementButton()
+        setButtons()
+        retrieveItemData()
     }
 
     private fun setEditTexts() {
@@ -47,12 +51,39 @@ class ScannedItemActivity : AppCompatActivity() {
         editTexts = arrayOf(nameEditText, priceEditText, notifyQuantityEditText, quantityEditText)
     }
 
+    private fun setButtons() {
+        setEditButton()
+        setCancelButton()
+        setSaveButton()
+        setDecrementButton()
+        setIncrementButton()
+    }
+
     private fun setEditButton() {
         editButton = findViewById(R.id.editItem)
         editButton.setOnClickListener {
             if (editing) onFinishEdit() else onEdit()
             editing = !editing
         }
+    }
+
+    private fun retrieveItemData() {
+        val uri = "http://173.34.40.62:5000/getinfo?serial=${barcode}"
+        uri.httpGet().responseString { _, _, result ->
+            if (result is Result.Success) {
+                itemExists = true
+                val jsonItem = JSONObject(result.get())
+                jsonItem.put("barcodeID", barcode)
+                setTextsForExistingItem(Item.fromJson(jsonItem))
+            } else println("Could not find item")
+        }.join()
+    }
+
+    private fun setTextsForExistingItem(item: Item) {
+        nameEditText.text = Editable.Factory().newEditable(item.productName)
+        priceEditText.text = Editable.Factory().newEditable("%.2f".format(item.price))
+        notifyQuantityEditText.text = Editable.Factory().newEditable("%.0f".format(item.notifyQuantity))
+        quantityEditText.text = Editable.Factory().newEditable("%d".format(item.quantity))
     }
 
     private fun onEdit() {
@@ -76,7 +107,56 @@ class ScannedItemActivity : AppCompatActivity() {
     }
 
     private fun onSave() {
-        // TODO: API call to update DB with contents of the EditTexts and Barcode ID
+        if (itemExists) updateExistingItem()
+        else createNewItem()
+    }
+
+    private fun updateExistingItem() {
+        val json = itemFromEditTexts().toJsonString()
+        "http://173.34.40.62:5000/editItem".httpPut()
+                .jsonBody(json)
+                .header(mapOf("Content-Length" to json.length, "Content-Type" to "application/json"))
+                .responseString { request, response, result ->
+                    if (result is Result.Success) {
+                        showSimpleDialogue("Success", "Item updated!", true)
+                    } else {
+                        showSimpleDialogue("Error", "Something went wrong. The item was not updated.")
+                    }
+                }.join()
+    }
+
+    private fun createNewItem() {
+        val json = itemFromEditTexts().toJsonString()
+        "http://173.34.40.62:5000/createItem".httpPost()
+                .jsonBody(json)
+                .header(mapOf("Content-Length" to json.length, "Content-Type" to "application/json"))
+                .responseString { request, response, result ->
+                    if (result is Result.Success) {
+                        showSimpleDialogue("Success", "Your new item has been saved!", true)
+                    } else {
+                        showSimpleDialogue("Error", "Something went wrong. The item was not saved.")
+                    }
+                }.join()
+    }
+
+    private fun showSimpleDialogue(title: String, message: String, finishOnClose: Boolean = false) {
+        runOnUiThread {
+            AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setIcon(R.drawable.baseline_keyboard_backspace_white_18dp)
+                    .setNeutralButton("OK") { dialog, p1 -> if (finishOnClose) finish() }
+                    .create()
+                    .show()
+        }
+    }
+
+    private fun itemFromEditTexts(): Item {
+        return Item(barcode,
+                nameEditText.text.toString(),
+                priceEditText.text.toString().asNumeric().toFloat(),
+                quantityEditText.text.toString().asNumeric().toLong(),
+                notifyQuantityEditText.text.toString().asNumeric().toFloat())
     }
 
     private fun setIncrementButton() {
@@ -87,7 +167,7 @@ class ScannedItemActivity : AppCompatActivity() {
     private fun incrementQuantityEditText() {
         quantityEditText.apply {
             text = Editable.Factory().newEditable(text.toString()
-                    .let { if (length() == 0) "0" else it }
+                    .asNumeric()
                     .toLong()
                     .plus(1)
                     .coerceAtMost(9999999999999)
@@ -103,11 +183,13 @@ class ScannedItemActivity : AppCompatActivity() {
     private fun decrementQuantityEditText() {
         quantityEditText.apply {
             text = Editable.Factory().newEditable(text.toString()
-                    .let { if (length() == 0) "0" else it }
+                    .asNumeric()
                     .toLong()
                     .minus(1)
                     .coerceAtLeast(0)
                     .toString())
         }
     }
+
+    private fun String.asNumeric(): String = if (length == 0) "0" else this
 }
