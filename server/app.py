@@ -27,7 +27,7 @@ def check_db_table():
     db.cursor().execute('CREATE DATABASE IF NOT EXISTS `scanx`;')
     db.cursor().execute('USE `scanx`;')
 
-    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`USER_ID` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`PRICE` int,`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`USER_ID` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`PRICE` DECIMAL(65,2),`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
     db.commit()
     db.close()
     db = get_db()
@@ -58,14 +58,15 @@ def getBySerial():
        return '{Error:\"Invalid serial\"}', 400
     if db_cursor.execute('SELECT * FROM Inventory WHERE SERIAL_NUMBER=%s', (serial,)) > 0:
         entry = db_cursor.fetchall()[0]
-        idOfScanner = entry[0]
-        serial = entry[1]
-        title = entry[2]
-        QOH = entry[3]
-        MQBN = entry[4]
+        idOfScanner = int(entry[0])
+        serial = str(entry[1])
+        title = str(entry[2])
+        PRICE = float(entry[3])
+        QOH = int(entry[4])
+        MQBN = float(entry[5])
         # Item found
         db.close()
-        return jsonify(USER_ID=idOfScanner, SERIAL_NUMBER=serial,PRODUCT_TITLE=title,QUANTITY_ON_HAND=QOH,MIN_QUANTITY_BEFORE_NOTIFY=MQBN), 200
+        return jsonify(USER_ID=idOfScanner, SERIAL_NUMBER=serial, PRODUCT_TITLE=title, PRICE=PRICE, QUANTITY_ON_HAND=QOH, MIN_QUANTITY_BEFORE_NOTIFY=MQBN), 200
     else:
         return '{Error:\"Serial not in database\"}',400
 
@@ -77,9 +78,9 @@ def getLastScans():
     entry = db_cursor.fetchall()
     data=[]
     for row in entry:
-        scanID = row[0]
-        barcodeID = row[1]
-        userID = row[2]
+        scanID = int(row[0])
+        barcodeID = str(row[1])
+        userID = int(row[2])
         singleObject = {}
         singleObject['SCAN_ID'] = scanID
         singleObject['BARCODE_ID'] = barcodeID
