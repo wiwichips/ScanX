@@ -55,8 +55,6 @@ def getBySerial():
     db = get_db()
     db_cursor = db.cursor()
     print(serial)
-    if(serial.isdigit() == False):
-       return '{Error:\"Invalid serial\"}', 400
     if db_cursor.execute('SELECT * FROM Inventory WHERE SERIAL_NUMBER=%s', (serial,)) > 0:
         entry = db_cursor.fetchall()[0]
         idOfScanner = int(entry[0])
