@@ -22,10 +22,17 @@ def get_db() -> MySQLdb.Connection:
 def check_db_table():
     # Makes sure the table exists and has the right columns
     db = get_db()
-    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`ID_OF_SCANNER` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Inventory` (`USER_ID` int,`SERIAL_NUMBER` varchar(30),`PRODUCT_TITLE` varchar(255),`PRICE` int,`QUANTITY_ON_HAND` int, `MIN_QUANTITY_BEFORE_NOTIFY` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
     db.commit()
     db.close()
-
+    db = get_db()
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Scans` (SCAN_ID int AUTO_INCREMENT PRIMARY KEY,`BARCODE_ID` varchar(30),`USER_ID` int, `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
+    db.commit()
+    db.close()
+    db = get_db()
+    db.cursor().execute('CREATE TABLE IF NOT EXISTS `Users` (USER_ID int AUTO_INCREMENT PRIMARY KEY,`USERNAME` varchar(30),`PASSWORD` varchar(30), `LAST_UPDATE` DATETIME DEFAULT CURRENT_TIMESTAMP);')
+    db.commit()
+    db.close()
 
 check_db_table()
 
@@ -36,7 +43,7 @@ def index(name=None):
     return render_template('', name=name)
 
 @app.route('/getinfo')
-def getdemoData():
+def getBySerial():
     serial = str(request.args.get('serial'))
     db = get_db()
     db_cursor = db.cursor()
@@ -52,13 +59,65 @@ def getdemoData():
         MQBN = entry[4]
         # Item found
         db.close()
-        return jsonify(ID_OF_SCANNER=idOfScanner, SERIAL_NUMBER=serial,PRODUCT_TITLE=title,QUANTITY_ON_HAND=QOH,MIN_QUANTITY_BEFORE_NOTIFY=MQBN), 200
+        return jsonify(USER_ID=idOfScanner, SERIAL_NUMBER=serial,PRODUCT_TITLE=title,QUANTITY_ON_HAND=QOH,MIN_QUANTITY_BEFORE_NOTIFY=MQBN), 200
     else:
         return '{Error:\"Serial not in database\"}',400
-    
-        
-    
     return "1"
+
+@app.route('/getLastScans')
+def getLastScans():
+    db = get_db()
+    db_cursor = db.cursor()
+    db_cursor.execute('SELECT * FROM Scans ORDER BY SCAN_ID DESC LIMIT 10')
+    entry = db_cursor.fetchall()
+    data=[]
+    for row in entry:
+        scanID = row[0]
+        barcodeID = row[1]
+        userID = row[2]
+        singleObject = {}
+        singleObject['SCAN_ID'] = scanID
+        singleObject['BARCODE_ID'] = barcodeID
+        singleObject['USER_ID'] =userID
+        data.append(singleObject)
+    # Item found
+    db.close()
+    return str(data), 200
+    
+@app.route('/createUser', methods=['POST'])
+def createUser():
+    print("here")
+    request_json = request.get_json(force=True)
+    
+    db = get_db()
+    db_cursor = db.cursor()
+    
+    # Try and find the user in the database
+    if db_cursor.execute('SELECT * FROM Users WHERE username=%s', (request_json['username'],)) > 0:
+        db.close()
+        return jsonify(message='User already exist'), 401
+    else:
+        # User does not exist in the database, register them
+        try:
+            
+            db_cursor.execute('INSERT INTO Users (username, password) VALUES (%s, %s)', (request_json['username'], request_json['password']))
+            db.commit()
+            db.close()
+            #session['username'] = request_json['username']
+            #session['logged_in'] = True
+            return jsonify(message='New account created'), 200
+        except MySQLdb.Error as e:
+            db.rollback()
+            db.close()
+            return jsonify(message=e.args), 500
+
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('username', None)
+    session['logged_in'] = False
+    return jsonify(message='OK'), 200
 
 # example of using sessions if we plan on it in the future 
 """
