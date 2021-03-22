@@ -13,6 +13,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
+/**
+ * ugly code. Shawn, please don't make fun of me. I hacked this together very early in the morning...
+ */
 
 class ScanList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,23 +25,24 @@ class ScanList : AppCompatActivity() {
         val listView: ListView = findViewById(R.id.lastscanslistview)
         val jsonResponses: MutableList<String> = ArrayList()
         val url = "http://173.34.40.62:5000/"
+
+        // prints the name and barcode of an item from its json
+        val itemCallBack = { itemResponse : JSONObject ->
+            jsonResponses.add(
+                    "Name: " + itemResponse.getString("PRODUCT_TITLE") + "\n" + "Barcode: " + itemResponse.getString("SERIAL_NUMBER")
+            )
+            val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, jsonResponses)
+            listView.setAdapter(adapter)
+        }
+
+        // makes a get request on each item to get its name
         val callback = { response : JSONArray ->
             try {
-                val jsonArray = response
-
-                for (i in 0 until jsonArray.length()) {
-                    val jsonObject = jsonArray.getJSONObject(i)
+                for (i in 0 until response.length()) {
+                    val jsonObject = response.getJSONObject(i)
                     val barcode_ID = jsonObject.getString("BARCODE_ID")
-                    // jsonResponses.add(barcode_ID)
-                    volleyGetJsonObject(url + "getinfo?serial=" + barcode_ID) { itemResponse : JSONObject ->
-                        jsonResponses.add(
-                                "Name: " + itemResponse.getString("PRODUCT_TITLE") + "\n" + "Barcode: " + itemResponse.getString("SERIAL_NUMBER")
-                        )
-                        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, jsonResponses)
-                        listView.setAdapter(adapter)
-                    }
+                    volleyGetJsonObject(url + "getinfo?serial=" + barcode_ID, itemCallBack)
                 }
-
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
