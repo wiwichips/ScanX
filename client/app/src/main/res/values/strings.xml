@@ -39,4 +39,21 @@
     <string name="product">Product</string>
     <string name="quantity">Quantity</string>
     <string name="submit_changes">Submit Changes</string>
+    <string name="finishEditing">Finish Editing</string>
+    <string name="editItem">Edit Item</string>
+    <string name="zero">0</string>
+    <string name="product_name">Product Name</string>
+    <string name="barcode_id">Barcode ID</string>
+    <string name="manage_inventory">Manage Inventory</string>
+    <string name="quantity_on_hand">Quantity on Hand</string>
+    <string name="min_quantity_before_notification">Min. Quantity Before Notification</string>
+    <string name="price">Price ($)</string>
+    <string name="_0_00">0.00</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="inventory">Inventory</string>
+    <string name="flashlight">Flashlight</string>
 </resources>

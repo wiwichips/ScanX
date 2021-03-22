@@ -14,16 +14,6 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 object CameraUtil {
-    /**
-     * Clamps x to between min and max (inclusive on both ends, x = min --> min, x = max --> max).
-     */
-    fun <T> clamp(x: T, min: T, max: T): T where T: Number, T: Comparable<T> {
-        return when {
-            x > max -> max
-            x < min -> min
-            else -> x
-        }
-    }
 
     fun inlineRectToRectF(rectF: RectF, rect: Rect) {
         rect.left = rectF.left.roundToInt()
@@ -171,23 +161,33 @@ object CameraUtil {
     }
 
     fun convertFrameRegionToViewRegion(frameRegion: Rect, frameSize: Rect, nOrientationDisplayOffset: Int, szCameraView: Size): Rect {
-        var roateRect = frameRegion
-        if (nOrientationDisplayOffset == 90) {
-            roateRect = boundaryRotate(Point(frameSize.width() / 2, frameSize.height() / 2), frameRegion, false)
-        } else if (nOrientationDisplayOffset == 180) {
-            roateRect = boundaryRotate180(Point(frameSize.width() / 2, frameSize.height() / 2), frameRegion)
-        } else if (nOrientationDisplayOffset == 270) {
-            roateRect = boundaryRotate(Point(frameSize.width() / 2, frameSize.height() / 2), frameRegion, true)
+        var rotateRect = frameRegion
+        val point = Point(frameSize.width() / 2, frameSize.height() / 2)
+        when (nOrientationDisplayOffset) {
+            90 -> rotateRect = boundaryRotate(point, frameRegion, false)
+            180 -> rotateRect = boundaryRotate180(point, frameRegion)
+            270 -> rotateRect = boundaryRotate(point, frameRegion, true)
         }
         val nViewW = szCameraView.width
         val nViewH = szCameraView.height
-        val fScaleH = if (nOrientationDisplayOffset % 180 == 0) 1.0f * nViewH / frameSize.height() else 1.0f * nViewH / frameSize.width()
-        val fScaleW = if (nOrientationDisplayOffset % 180 == 0) 1.0f * nViewW / frameSize.width() else 1.0f * nViewW / frameSize.height()
+
+        val fScaleH = if (nOrientationDisplayOffset % 180 == 0) {
+            1.0f * nViewH / frameSize.height()
+        } else {
+            1.0f * nViewH / frameSize.width()
+        }
+
+        val fScaleW = if (nOrientationDisplayOffset % 180 == 0) {
+            1.0f * nViewW / frameSize.width()
+        } else {
+            1.0f * nViewW / frameSize.height()
+        }
+
         val fScale = if (fScaleH > fScaleW) fScaleW else fScaleH
-        val boxLeft = (roateRect.left * fScale).toInt()
-        val boxTop = (roateRect.top * fScale).toInt()
-        val boxWidth = (roateRect.width() * fScale).toInt()
-        val boxHeight = (roateRect.height() * fScale).toInt()
+        val boxLeft = (rotateRect.left * fScale).toInt()
+        val boxTop = (rotateRect.top * fScale).toInt()
+        val boxWidth = (rotateRect.width() * fScale).toInt()
+        val boxHeight = (rotateRect.height() * fScale).toInt()
         return Rect(boxLeft, boxTop, boxWidth + boxLeft, boxTop + boxHeight)
     }
 }

@@ -20,6 +20,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -462,34 +463,36 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
                     var bTempCropContains = false
                     if (mMainActivity!!.mainBarcodeReader!!.intermediateResults.isNotEmpty()) {
                         val intermediateResults = mMainActivity!!.mainBarcodeReader!!.intermediateResults
-                        val localizationResults = intermediateResults[0].results as Array<LocalizationResult>
+                        val localizationResults = intermediateResults[0].results as Array<*>
                         for (result in localizationResults) {
-                            val points = result.resultPoints
-                            var leftX: Int
-                            var leftY: Int
-                            var rightX: Int
-                            var rightY: Int
-                            leftX = points[0].x
-                            rightX = leftX
-                            leftY = points[0].y
-                            rightY = leftY
-                            for (pt in points) {
-                                if (pt.x < leftX) leftX = pt.x
-                                if (pt.y < leftY) leftY = pt.y
-                                if (pt.x > rightX) rightX = pt.x
-                                if (pt.y > rightY) rightY = pt.y
-                            }
-                            val frameRegion = Rect(leftX, leftY, rightX, rightY)
-                            val frameSize = Rect(0, 0, outputPreviewSize!!.width, outputPreviewSize!!.height)
-                            val viewRegion = convertFrameRegionToViewRegion(frameRegion, frameSize, getOrientationDisplayOffset(Objects.requireNonNull(activity)!!, mSensorOrientation), Size(mTextureView.width, mTextureView.height))
-                            if (mQrCropRect.contains(viewRegion) || viewRegion.contains(mQrCropRect) || mQrCropRect.intersect(mQrCropRect)) {
-                                mZoomState = if (mQrCropRect.contains(viewRegion)) {
-                                    1 //zoom in
-                                } else {
-                                    2 //zoom hold
+                            if (result is LocalizationResult) {
+                                val points = result.resultPoints
+                                var leftX: Int
+                                var leftY: Int
+                                var rightX: Int
+                                var rightY: Int
+                                leftX = points[0].x
+                                rightX = leftX
+                                leftY = points[0].y
+                                rightY = leftY
+                                for (pt in points) {
+                                    if (pt.x < leftX) leftX = pt.x
+                                    if (pt.y < leftY) leftY = pt.y
+                                    if (pt.x > rightX) rightX = pt.x
+                                    if (pt.y > rightY) rightY = pt.y
                                 }
-                                bTempCropContains = true
-                                break
+                                val frameRegion = Rect(leftX, leftY, rightX, rightY)
+                                val frameSize = Rect(0, 0, outputPreviewSize!!.width, outputPreviewSize!!.height)
+                                val viewRegion = convertFrameRegionToViewRegion(frameRegion, frameSize, getOrientationDisplayOffset(Objects.requireNonNull(activity)!!, mSensorOrientation), Size(mTextureView.width, mTextureView.height))
+                                if (mQrCropRect.contains(viewRegion) || viewRegion.contains(mQrCropRect) || mQrCropRect.intersect(mQrCropRect)) {
+                                    mZoomState = if (mQrCropRect.contains(viewRegion)) {
+                                        1 //zoom in
+                                    } else {
+                                        2 //zoom hold
+                                    }
+                                    bTempCropContains = true
+                                    break
+                                }
                             }
                         }
                     }
@@ -498,6 +501,7 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
                     }
                     if (results != null && results.isNotEmpty()) {
                         message.obj = parseResult(results)
+                        onScan((message.obj as String).takeLast(10))
                     } else {
                         message.obj = ""
                     }
@@ -513,6 +517,13 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
                 super.handleMessage(msg)
             }
         }
+    }
+
+    private fun onScan(barcode: String) {
+        val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
+            putExtra("barcode", barcode)
+        }
+        startActivity(intent)
     }
 
     /**
@@ -554,11 +565,17 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
             mPreviewRequestBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             mPreviewRequestBuilder!!.addTarget(surface)
             mPreviewRequestBuilder!!.addTarget(mImageReader!!.surface)
-            val width = mPreviewSize!!.width * 3 / 4
-            val height = mPreviewSize!!.height * 3 / 4
-            val boxWidth = min(width, height)
-            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(MeteringRectangle(Point((mPreviewSize!!.width - boxWidth) / 2, (mPreviewSize!!.height - boxWidth) / 2), Size(boxWidth, boxWidth), 1000)))
-            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(MeteringRectangle(Point((mPreviewSize!!.width - boxWidth) / 2, (mPreviewSize!!.height - boxWidth) / 2), Size(boxWidth, boxWidth), 1000)))
+
+            val boxWidth = min(mPreviewSize!!.width * 3 / 4, mPreviewSize!!.height * 3 / 4)
+            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(
+                    MeteringRectangle(
+                            Point((mPreviewSize!!.width - boxWidth) / 2, (mPreviewSize!!.height - boxWidth) / 2),
+                            Size(boxWidth, boxWidth), 1000)))
+
+            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(
+                    MeteringRectangle(
+                            Point((mPreviewSize!!.width - boxWidth) / 2, (mPreviewSize!!.height - boxWidth) / 2),
+                            Size(boxWidth, boxWidth), 1000)))
 
             // Here, we create a CameraCaptureSession for camera preview.
             mCameraDevice!!.createCaptureSession(listOf(surface, mImageReader!!.surface),
@@ -602,8 +619,8 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
                 mCaptureSession!!.setRepeatingRequest(mPreviewRequestBuilder!!.build(), null, null)
                 false
             } else {
-                mPreviewRequestBuilder!!.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH)
-                mCaptureSession!!.setRepeatingRequest(mPreviewRequestBuilder!!.build(), null, null)
+                mPreviewRequestBuilder?.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH)
+                mCaptureSession?.setRepeatingRequest(mPreviewRequestBuilder!!.build(), null, null)
                 true
             }
         } catch (e: CameraAccessException) {

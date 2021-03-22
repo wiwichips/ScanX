@@ -17,11 +17,6 @@ object AutoFocusHelper {
     ).toInt()
 
     /**
-     * Zero weight 3A region, to reset regions per API.
-     */
-    val zeroWeightRegion = arrayOf(MeteringRectangle(0, 0, 0, 0, 0))
-
-    /**
      * Compute 3A regions for a sensor-referenced touch coordinate.
      * Returns a MeteringRectangle[] with length 1.
      *
@@ -51,10 +46,10 @@ object AutoFocusHelper {
                 yCenterSensor + halfSideLength)
 
         // Clamp meteringRegion to cropRegion.
-        meteringRegion.left = CameraUtil.clamp(meteringRegion.left, cropRegion.left, cropRegion.right)
-        meteringRegion.top = CameraUtil.clamp(meteringRegion.top, cropRegion.top, cropRegion.bottom)
-        meteringRegion.right = CameraUtil.clamp(meteringRegion.right, cropRegion.left, cropRegion.right)
-        meteringRegion.bottom = CameraUtil.clamp(meteringRegion.bottom, cropRegion.top, cropRegion.bottom)
+        meteringRegion.left = meteringRegion.left.coerceIn(cropRegion.left, cropRegion.right)
+        meteringRegion.top = meteringRegion.top.coerceIn(cropRegion.top, cropRegion.bottom)
+        meteringRegion.right = meteringRegion.right.coerceIn(cropRegion.left, cropRegion.right)
+        meteringRegion.bottom = meteringRegion.bottom.coerceIn(cropRegion.top, cropRegion.bottom)
         return arrayOf(MeteringRectangle(meteringRegion, CAMERA2_REGION_WEIGHT))
     }
 

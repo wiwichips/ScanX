@@ -19,27 +19,12 @@
         tools:layout_editor_absoluteY="-62dp">
 
         <Button
-            android:id="@+id/btnScanMain"
-            android:layout_width="124dp"
-            android:layout_height="55dp"
-            android:layout_marginBottom="28dp"
-            android:rotation="-360"
-            android:rotationX="-360"
-            android:rotationY="-360"
-            android:text="Scan"
-            android:onClick="onScan"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnFlashMain"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btnInventoryMain" />
-
-        <Button
             android:id="@+id/btnFlashMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="35dp"
             android:layout_marginBottom="29dp"
-            android:text="Flashlight"
+            android:text="@string/flashlight"
             android:onClick="onFlash"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -50,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginBottom="29dp"
-            android:text="Inventory"
+            android:text="@string/inventory"
             android:textColorLink="#FFFFFF"
             android:onClick="onInventory"
             app:layout_constraintBottom_toBottomOf="parent"

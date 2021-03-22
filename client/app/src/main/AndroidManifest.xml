@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ScanList"></activity>
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme"
+        android:allowBackup="true">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -36,6 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.dynamsoft.sample.dbrcamerapreview.SettingActivity" />
+        <activity android:name="com.dynamsoft.sample.dbrcamerapreview.ScannedItemActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".PopUp" />
     </application>
