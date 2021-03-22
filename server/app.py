@@ -5,6 +5,7 @@ import MySQLdb
 import MySQLdb.cursors
 import requests
 from flask import Flask, render_template, jsonify, request, session
+from urllib.parse import unquote
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = b'A+jWl4h6wMkR7LcWBm85AO8q'
@@ -50,7 +51,7 @@ def index(name=None):
 
 @app.route('/getinfo')
 def getBySerial():
-    serial = str(request.args.get('serial'))
+    serial = unquote(str(request.args.get('serial')))
     db = get_db()
     db_cursor = db.cursor()
     print(serial)
