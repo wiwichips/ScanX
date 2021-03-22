@@ -12,7 +12,7 @@ class DBRCache private constructor(cacheDir: File, max_size: Long, max_count: In
 
     private val mCache: ACacheManager
 
-    fun put(key: String, value: String?) {
+    operator fun set(key: String, value: String?) {
         val file = mCache.newFile(key)
         var out: BufferedWriter? = null
         try {

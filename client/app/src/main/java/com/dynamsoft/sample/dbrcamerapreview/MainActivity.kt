@@ -36,19 +36,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         mCache = DBRCache[this]
-        mCache.put("linear", "1")
-        mCache.put("qrcode", "1")
-        mCache.put("pdf417", "1")
-        mCache.put("matrix", "1")
-        mCache.put("aztec", "0")
-        mCache.put("databar", "0")
-        mCache.put("patchcode", "0")
-        mCache.put("maxicode", "0")
-        mCache.put("microqr", "0")
-        mCache.put("micropdf417", "0")
-        mCache.put("gs1compositecode", "0")
-        mCache.put("postalcode", "0")
-        mCache.put("dotcode", "0")
+        mCache["linear"] = "1"
+        mCache["qrcode"] = "1"
+        mCache["pdf417"] = "1"
+        mCache["matrix"] = "1"
+        mCache["aztec"] = "0"
+        mCache["databar"] = "0"
+        mCache["patchcode"] = "0"
+        mCache["maxicode"] = "0"
+        mCache["microqr"] = "0"
+        mCache["micropdf417"] = "0"
+        mCache["gs1compositecode"] = "0"
+        mCache["postalcode"] = "0"
+        mCache["dotcode"] = "0"
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -138,40 +138,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * Event listeners for main page buttons
      */
-    fun onScan(view: View?) {
-        // This method is the event listener for the scan button
-        println("Scan - #7 https://gitlab.socs.uoguelph.ca/skaplan/cis3760/-/issues/7")
-
-        /*
-         * TODO: Delete this comment after it is implemented
-         *
-         * This comment describes the code that will be written at a later date. This code will
-         * likely be contained in separate classes, but the general logic flow will be as follows
-         *
-         * Make a request to the backend to see if there is an entry in the db for the barcode
-         *
-         * If there is not an entry:
-         *      prompt the user to enter the name of the product and the quantity to add to the db
-         *
-         * Else, if there is an entry:
-         *      Make a request to the backend to get the info and display it in the page
-         *
-         *      If the user edits the quantity, make a request to the backend that changes the
-         *      quantity
-         */
-
-        // Make a request to the backend to see if there is an entry in the db for the barcode
-        // ... get (user, barcodeId) ...
-
-        // If there is not an entry,
-        // ... if (isExist == false) ...
-        // ... startActivity(new Intent(MainActivity.this, PopUpCreate.class));
-
-        // Else, if there is an entry
-        // ... else ...
-        startActivity(Intent(this@MainActivity, PopUp::class.java))
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun onFlash(view: View?) {
         cameraFragment.onFlash(view)

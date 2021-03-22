@@ -76,9 +76,9 @@ class SettingActivity : Activity(), CompoundButton.OnCheckedChangeListener {
         super.onBackPressed()
         for (entry in checkboxes.entries) {
             if (entry.value.isChecked) {
-                mCache.put(entry.key, "1")
+                mCache[entry.key] = "1"
             } else {
-                mCache.put(entry.key, "0")
+                mCache[entry.key] = "0"
             }
         }
         setResult(0)
