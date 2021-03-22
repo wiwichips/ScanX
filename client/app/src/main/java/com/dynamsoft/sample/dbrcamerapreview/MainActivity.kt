@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         try {
-            mainBarcodeReader = BarcodeReader("t0068MgAAACquj133Eq/dO8e++8vZnJoxnoBQt7war3uxkJrf6f7pbI12H1a2vxoCyEQvQvjcZH9UrfqDHfbYYFpcwVAvASA=")
+            mainBarcodeReader = BarcodeReader("t0076xQAAAB27rT5RWRFvtngBpQ18rjgvIwytenADnJ4lv/CDyyH6eclq+FDfZU7U1zIhZIqVNz4UdpZhIxq8PQPYjnvC5DS3MOoEFowpgg==")
             mainBarcodeReader!!.initRuntimeSettingsWithString("{\"ImageParameter\":{\"Name\":\"Balance\",\"DeblurLevel\":5,\"ExpectedBarcodesCount\":512,\"LocalizationModes\":[{\"Mode\":\"LM_CONNECTED_BLOCKS\"},{\"Mode\":\"LM_SCAN_DIRECTLY\"}]}}", EnumConflictMode.CM_OVERWRITE)
             val settings = mainBarcodeReader!!.runtimeSettings
             settings.intermediateResultTypes = EnumIntermediateResultType.IRT_TYPED_BARCODE_ZONE
