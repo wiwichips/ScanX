@@ -1,23 +1,23 @@
 Users
-
 	POST "/createUser" = Create a user in the system
-		Body:
+		Body: JSON string
 			username: string
 			password: string
 
 	GET "/logout"
-		
+
+	
 Get Stored Information
 	GET "/getinfo" = Gets inventory information about a scanned barcode
-		URL Parameters:
+		URL Parameters: 
 			serial: int
-		
 	
 	GET "/getLastScans" = Gets the most recent scans, up to 10
 
+
 Alter Stored Information
 	POST "/createItem" = Adds an item to the database
-		Body:
+		Body: JSON string
 			barcodeID: string
 				- Scanned ID of the barcode
 			name: string
@@ -30,7 +30,7 @@ Alter Stored Information
 				- Amount of product to add
 		
 	PUT "/editItem" = Edits the details about an item that is stored in the database
-		Body:
+		Body: JSON string
 			barcodeID: string
 				- Scanned ID of the barcode
 			name: string
@@ -43,7 +43,7 @@ Alter Stored Information
 				- Amount of product to add
 
 	PUT "/editStock" = Edits the inventory count of an item
-		Body:
+		Body: JSON string
 			count: int
 				- Amount of product to add
 			barcodeID: string
