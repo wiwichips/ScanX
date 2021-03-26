@@ -48,6 +48,27 @@ check_db_table()
 def index(name=None):
     return render_template('', name=name)
 
+@app.route('/getInventory', methods=['GET'])
+def getInventory():
+    db = get_db()
+    db_cursor = db.cursor()
+    db_cursor.execute('SELECT * FROM Inventory')
+    entry = db_cursor.fetchall()
+    data=[]
+    for row in entry:
+        SERIAL_NUMBER = row[1]
+        PRODUCT_TITLE = row[2]
+        PRICE = row[3]
+        QUANTITY_ON_HAND = row[4]
+        singleObject = {}
+        singleObject['SERIAL_NUMBER'] = SERIAL_NUMBER
+        singleObject['PRODUCT_TITLE'] = PRODUCT_TITLE
+        singleObject['PRICE'] =PRICE
+        singleObject['QUANTITY_ON_HAND'] =QUANTITY_ON_HAND
+        data.append(singleObject)
+    # Item found
+    db.close()
+    return str(data), 200
 
 @app.route('/getinfo')
 def getBySerial():
