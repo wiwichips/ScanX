@@ -196,7 +196,7 @@ def create_item():
             db.commit()
             db.close()
             return {}, 200
-    except MySQLdb.Error as e:
+    except Exception as e:
         db.rollback()
         db.close()
         return jsonify(message=e.args), 500
@@ -229,7 +229,7 @@ def edit_item():
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
-    except MySQLdb.Error as e:
+    except Exception as e:
         db.rollback()
         db.close()
         return jsonify(message=e.args), 500
@@ -263,7 +263,43 @@ def edit_stock():
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
-    except MySQLdb.Error as e:
+    except Exception as e:
         db.rollback()
         db.close()
         return jsonify(message=e.args), 500
+
+
+@app.route("/search", methods=['GET'])
+def search_item():
+    item = request.get_json()
+
+    #Input validation
+    if not (isinstance(item['type'], str)):
+        return jsonify(message='Item ' + str(item['type']) + ' was not of expected type `string`.'), 400
+    if not (isinstance(item['term'], str)):
+        return jsonify(message='Item ' + str(item['term']) + ' was not of expected type `string`.'), 400
+
+    if not item['type'] == "barcode" and not item['type'] == "name":
+        return jsonify(message='Value ' + str(item['type']) + ' was not of expected values `barcode` or `name`.'), 400
+
+    db = get_db()
+    db_cursor = db.cursor()
+
+    try:
+        if item['type'] == "name":
+            db_cursor.execute("SELECT * FROM inventory WHERE UPPER(PRODUCT_TITLE) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
+        elif item['type'] == "barcode":
+            db_cursor.execute("SELECT * FROM inventory WHERE UPPER(SERIAL_NUMBER) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
+
+        found_rows = db_cursor.fetchall()
+        db.close()
+    except Exception as e:
+        db.rollback()
+        db.close()
+        return jsonify(message=e.args), 500
+
+    item_array = []
+    for row in found_rows:
+        item_array.append({"barcodeID": str(row[1]), "title": str(row[2]), "price": float(row[3]), "onHand": int(row[4])})
+
+    return jsonify(item_array), 200

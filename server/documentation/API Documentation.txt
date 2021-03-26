@@ -14,6 +14,22 @@ Get Stored Information
 	
 	GET "/getLastScans" = Gets the most recent scans, up to 10
 
+	GET "/search" = Get a list of items that match a search term
+	    Body: JSON string
+	        type: string
+	            - "name" or "barcode"
+	        term: string
+	            - Search term
+	    Return: JSON array
+	        barcodeID: string
+	            - Barcode of item
+	        title: string
+	            - Title of the item
+	        price: float
+	            - Price of the item
+	        onHand: int
+	            - Number of item in inventory
+
 
 Alter Stored Information
 	POST "/createItem" = Adds an item to the database
