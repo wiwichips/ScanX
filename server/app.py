@@ -169,6 +169,21 @@ def get_user_id():
         raise Exception("No user ID in session.")
 
 
+# Checks stock level for an item
+def check_stock_item(barcode: str):
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        if cursor.execute('SELECT * FROM Inventory WHERE SERIAL_NUMBER=%s AND QUANTITY_ON_HAND < MIN_QUANTITY_BEFORE_NOTIFY ', (barcode,)) > 0:
+            item = cursor.fetchone()
+            db.close()
+            print("Item " + item[2] + " has low stock.")
+    except Exception as e:
+        db.close()
+        print("Error occurred when accessing database")
+
+
 @app.route("/createItem", methods=['POST'])
 def create_item():
     item = request.get_json()
@@ -226,6 +241,7 @@ def edit_item():
             db_cursor.execute('UPDATE Inventory SET USER_ID=%s, SERIAL_NUMBER=%s, PRODUCT_TITLE=%s, PRICE=%s, MIN_QUANTITY_BEFORE_NOTIFY=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['barcodeID'], item['name'], item['price'], item['minStock'], item['count'], item['barcodeID'],))
             db.commit()
             db.close()
+            check_stock_item(item['barcodeID'])
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
@@ -260,6 +276,7 @@ def edit_stock():
             db_cursor.execute('UPDATE Inventory SET USER_ID=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['count'], item['barcodeID'],))
             db.commit()
             db.close()
+            check_stock_item(item['barcodeID'])
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
