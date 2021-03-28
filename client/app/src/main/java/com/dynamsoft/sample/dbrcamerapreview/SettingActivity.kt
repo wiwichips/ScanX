@@ -3,7 +3,7 @@ package com.dynamsoft.sample.dbrcamerapreview
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache

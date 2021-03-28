@@ -1,23 +1,34 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.dynamsoft.dbr.*
 import com.dynamsoft.sample.dbrcamerapreview.util.DBRCache
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     var mainBarcodeReader: BarcodeReader? = null
         private set
     private lateinit var mCache: DBRCache
     private val cameraFragment: Camera2BasicFragment = Camera2BasicFragment.newInstance()
+    private lateinit var requestQueue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +71,36 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.container, cameraFragment)
                     .commit()
         }
+        FirebaseApp.initializeApp(this)
+        requestQueue = Volley.newRequestQueue(this)
+        createNotificationChannel()
+        receiveNotifications()
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "ScanX"
+            val descriptionText = "Stock Notifications"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("CIS3760_1337", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun receiveNotifications() {
+        val url = "http://173.34.40.62:5000/subscribe"
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { if (it.isSuccessful) {
+            val jsonObject = JSONObject(mapOf("id" to it.result))
+            val request = JsonObjectRequest(Request.Method.POST, url, jsonObject, {}, null)
+            requestQueue.add(request)
+        } }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
