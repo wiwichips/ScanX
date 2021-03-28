@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "7590923418",
+    "project_id": "scanx-a77b5",
+    "storage_bucket": "scanx-a77b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7590923418:android:b4d1a065fb41ccfc37e323",
+        "android_client_info": {
+          "package_name": "com.dynamsoft.sample.dbrcamerapreview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7590923418-4kuvibqlpa1p4ursc5e2ep7e41oheal4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEV2w0ShOqkH9Q_gOXAu02euqQKWdVF3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7590923418-4kuvibqlpa1p4ursc5e2ep7e41oheal4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

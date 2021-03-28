@@ -1,17 +1,15 @@
-import json
-import math
-
 import MySQLdb
 import MySQLdb.cursors
-import requests
 from flask import Flask, render_template, jsonify, request, session
 from urllib.parse import unquote
+from pyfcm import FCMNotification
 
+push_service = FCMNotification(api_key="AAAAAcR0TJo:APA91bHXcZriWflLWElaYyWjuN8mMZuNoID7sdU6vtphNcxAHVCWoquxQK99kxjpg_GP_FOSPAJImleMGhxlsH4TN6VskzWvLFyZfr_hPGXSQOVk05rloo1F62UwAeNzB-X2XVd3PnK0")
 app = Flask(__name__, static_url_path='')
 app.secret_key = b'A+jWl4h6wMkR7LcWBm85AO8q'
+registration_ids = set([])
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
-
 
 def get_db() -> MySQLdb.Connection:
     db = MySQLdb.connect(host='127.0.0.1',
@@ -169,6 +167,35 @@ def get_user_id():
         raise Exception("No user ID in session.")
 
 
+# Checks stock level for an item
+def check_stock_item(barcode: str):
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        if cursor.execute('SELECT * FROM Inventory WHERE SERIAL_NUMBER=%s AND QUANTITY_ON_HAND < MIN_QUANTITY_BEFORE_NOTIFY ', (barcode,)) > 0:
+            item = cursor.fetchone()
+            db.close()
+            message_title = "Stock Level Alert"
+            message_body = "Item has low stock: " + item[2]
+            result = push_service.notify_multiple_devices(registration_ids=list(registration_ids), message_title=message_title, message_body=message_body)
+            print(message_title)
+            print(message_body)
+            print(result)
+            print("\n")
+    except Exception as e:
+        db.close()
+        print("Error occurred when accessing database")
+
+
+@app.route("/subscribe", methods=['POST'])
+def subscribe_device():
+    payload = request.get_json()
+    print(payload['id'])
+    registration_ids.add(payload['id'])
+    return {}, 200
+
+
 @app.route("/createItem", methods=['POST'])
 def create_item():
     item = request.get_json()
@@ -226,6 +253,7 @@ def edit_item():
             db_cursor.execute('UPDATE Inventory SET USER_ID=%s, SERIAL_NUMBER=%s, PRODUCT_TITLE=%s, PRICE=%s, MIN_QUANTITY_BEFORE_NOTIFY=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['barcodeID'], item['name'], item['price'], item['minStock'], item['count'], item['barcodeID'],))
             db.commit()
             db.close()
+            check_stock_item(item['barcodeID'])
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400
@@ -260,6 +288,7 @@ def edit_stock():
             db_cursor.execute('UPDATE Inventory SET USER_ID=%s, QUANTITY_ON_HAND=%s WHERE SERIAL_NUMBER=%s', (userID, item['count'], item['barcodeID'],))
             db.commit()
             db.close()
+            check_stock_item(item['barcodeID'])
             return {}, 200
         else:
             return jsonify(message="Item with barcode `" + str(item['barcodeID']) + "` does not exist. Use `createItem` endpoint first."), 400

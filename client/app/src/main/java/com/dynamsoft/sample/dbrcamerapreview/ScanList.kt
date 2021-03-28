@@ -1,7 +1,7 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.android.volley.Request
@@ -53,17 +53,16 @@ class ScanList : AppCompatActivity() {
 
     private fun volleyGetJsonArray(endPoint : String, callback : (response : JSONArray) -> Unit) {
         val requestQueue = Volley.newRequestQueue(this)
-        val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, endPoint, null, Response.Listener { response ->
+        val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, endPoint, null, { response ->
             callback(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
+        }, { error -> error.printStackTrace() })
         requestQueue.add(jsonObjectRequest)
     }
 
     private fun volleyGetJsonObject(endPoint : String, callback : (response : JSONObject) -> Unit) {
         val requestQueue = Volley.newRequestQueue(this)
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, endPoint, null, Response.Listener { response ->
-            callback(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
+        val jsonObjectRequest = JsonObjectRequest(
+                Request.Method.GET, endPoint, null, { callback(it) }, { it.printStackTrace() })
         requestQueue.add(jsonObjectRequest)
     }
 }
