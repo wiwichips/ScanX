@@ -1,17 +1,3 @@
-Users
-	POST "/createUser" = Create a user in the system
-		Body: JSON string
-			username: string
-			password: string
-
-	GET "/logout"
-
-	POST "/subscribe" = Subscribes a device to the notification service
-	    Body: JSON string
-	        id: string
-	            - Registration ID given by FCM
-
-	
 Get Stored Information
 	GET "/getinfo" = Gets inventory information about a scanned barcode
 		URL Parameters: 
