@@ -1,6 +1,5 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
@@ -16,6 +15,7 @@ import java.util.*
 class NotificationReceiver : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
+        println("NEW TOKEN: $token")
         val url = "http://173.34.40.62:5000/subscribe"
         val body = JSONObject(mapOf("id" to token))
         Volley.newRequestQueue(this).add(

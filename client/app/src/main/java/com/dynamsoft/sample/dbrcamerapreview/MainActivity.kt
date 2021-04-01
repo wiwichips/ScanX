@@ -96,11 +96,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun receiveNotifications() {
         val url = "http://173.34.40.62:5000/subscribe"
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { if (it.isSuccessful) {
-            val jsonObject = JSONObject(mapOf("id" to it.result))
-            val request = JsonObjectRequest(Request.Method.POST, url, jsonObject, {}, null)
-            requestQueue.add(request)
-        } }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val jsonObject = JSONObject(mapOf("id" to it.result))
+                val request = JsonObjectRequest(Request.Method.POST, url, jsonObject, {}, null)
+                requestQueue.add(request)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
