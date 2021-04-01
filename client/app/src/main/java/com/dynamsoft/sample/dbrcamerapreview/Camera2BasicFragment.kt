@@ -520,10 +520,12 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
     }
 
     private fun onScan(barcode: String) {
-        val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
-            putExtra("barcode", barcode)
+        if (barcode.all { it.isDigit() }) {
+            val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
+                putExtra("barcode", barcode)
+            }
+            startActivity(intent)
         }
-        startActivity(intent)
     }
 
     /**
