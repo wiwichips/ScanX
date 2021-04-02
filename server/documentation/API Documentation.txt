@@ -1,18 +1,25 @@
-Users
-	POST "/createUser" = Create a user in the system
-		Body: JSON string
-			username: string
-			password: string
-
-	GET "/logout"
-
-	
 Get Stored Information
 	GET "/getinfo" = Gets inventory information about a scanned barcode
 		URL Parameters: 
 			serial: int
 	
 	GET "/getLastScans" = Gets the most recent scans, up to 10
+
+	GET "/search" = Get a list of items that match a search term
+	    Body: JSON string
+	        type: string
+	            - "name" or "barcode"
+	        term: string
+	            - Search term
+	    Return: JSON array
+	        barcodeID: string
+	            - Barcode of item
+	        title: string
+	            - Title of the item
+	        price: float
+	            - Price of the item
+	        onHand: int
+	            - Number of item in inventory
 
 
 Alter Stored Information

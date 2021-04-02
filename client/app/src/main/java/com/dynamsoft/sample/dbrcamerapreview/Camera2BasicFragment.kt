@@ -30,11 +30,11 @@ import android.hardware.camera2.params.MeteringRectangle
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.*
-import android.support.annotation.RequiresApi
-import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -520,10 +520,12 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
     }
 
     private fun onScan(barcode: String) {
-        val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
-            putExtra("barcode", barcode)
+        if (barcode.all { it.isDigit() }) {
+            val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
+                putExtra("barcode", barcode)
+            }
+            startActivity(intent)
         }
-        startActivity(intent)
     }
 
     /**
