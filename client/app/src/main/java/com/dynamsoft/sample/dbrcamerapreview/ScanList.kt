@@ -7,11 +7,9 @@ import android.widget.ListView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
 /**
  * ugly code. Shawn, please don't make fun of me. I hacked this together very early in the morning...
@@ -26,44 +24,30 @@ class ScanList : AppCompatActivity() {
         val jsonResponses: MutableList<String> = ArrayList()
         val url = "http://173.34.40.62:5000/"
 
-        // prints the name and barcode of an item from its json
-        val itemCallBack = { itemResponse : JSONObject ->
-            jsonResponses.add(
-                    "Name: " + itemResponse.getString("PRODUCT_TITLE") + "\n" + "Barcode: " + itemResponse.getString("SERIAL_NUMBER")
-            )
-            val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, jsonResponses)
-            listView.setAdapter(adapter)
-        }
-
         // makes a get request on each item to get its name
-        val callback = { response : JSONArray ->
+        val callback = { response: JSONArray ->
             try {
                 for (i in 0 until response.length()) {
                     val jsonObject = response.getJSONObject(i)
-                    val barcode_ID = jsonObject.getString("BARCODE_ID")
-                    volleyGetJsonObject(url + "getinfo?serial=" + barcode_ID, itemCallBack)
+                    jsonResponses.add(
+                            "Name: " + jsonObject.getString("PRODUCT_TITLE") + "\n" + "Qty: " + jsonObject.getString("QUANTITY_ON_HAND")
+                    )
                 }
+
+                val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, jsonResponses)
+                listView.setAdapter(adapter)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
         }
 
-        volleyGetJsonArray(url + "getLastScans", callback)
+        volleyGet(url + "getInventory", callback)
     }
 
-    private fun volleyGetJsonArray(endPoint : String, callback : (response : JSONArray) -> Unit) {
+    private fun volleyGet(path: String, callback: (res: JSONArray) -> Unit) {
         val requestQueue = Volley.newRequestQueue(this)
-        val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, endPoint, null, Response.Listener { response ->
-            callback(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-        requestQueue.add(jsonObjectRequest)
-    }
-
-    private fun volleyGetJsonObject(endPoint : String, callback : (response : JSONObject) -> Unit) {
-        val requestQueue = Volley.newRequestQueue(this)
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, endPoint, null, Response.Listener { response ->
-            callback(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-        requestQueue.add(jsonObjectRequest)
+        requestQueue.add(JsonArrayRequest(Request.Method.GET, path, null, Response.Listener { res ->
+            callback(res)
+        }, Response.ErrorListener { error -> error.printStackTrace() }))
     }
 }
