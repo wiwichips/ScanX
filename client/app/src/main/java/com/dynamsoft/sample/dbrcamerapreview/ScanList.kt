@@ -1,6 +1,7 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -16,11 +17,25 @@ import org.json.JSONException
  */
 
 class ScanList : AppCompatActivity() {
+    private lateinit var listView: ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scan_list)
 
-        val listView: ListView = findViewById(R.id.lastscanslistview)
+        setContentView(R.layout.activity_scan_list)
+        listView = findViewById(R.id.lastscanslistview)
+        // by defualt, display all the items in the inventory
+        displayInventory()
+    }
+
+    fun displayScanHistory() {
+        val scanList = readScans(this)
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, scanList)
+        listView.setAdapter(adapter)
+    }
+
+    fun displayInventory() {
+        println("test")
         val jsonResponses: MutableList<String> = ArrayList()
         val url = "http://173.34.40.62:5000/"
 
@@ -52,5 +67,16 @@ class ScanList : AppCompatActivity() {
         requestQueue.add(JsonArrayRequest(Request.Method.GET, path, null, { res ->
             callback(res)
         }, { error -> error.printStackTrace() }))
+    }
+
+    // event listeners
+    fun onInventoryTab(view: View) {
+        println("onInventory")
+        displayInventory()
+    }
+
+    fun onHistoryTab(view: View) {
+        println("onHistory")
+        displayScanHistory()
     }
 }
