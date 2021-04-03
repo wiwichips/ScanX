@@ -44,6 +44,9 @@ class ScanList : AppCompatActivity() {
         volleyGet(url + "getInventory", callback)
     }
 
+    /**
+     * JSON Array requests
+     */
     private fun volleyGet(path: String, callback: (res: JSONArray) -> Unit) {
         val requestQueue = Volley.newRequestQueue(this)
         requestQueue.add(JsonArrayRequest(Request.Method.GET, path, null, { res ->
