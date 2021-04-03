@@ -1,19 +1,22 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.dynamsoft.sample.dbrcamerapreview.entity.Item
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
-import org.json.JSONObject
 import com.github.kittinunf.result.Result
+import org.json.JSONObject
+
 
 class ScannedItemActivity : AppCompatActivity() {
 
@@ -48,6 +51,14 @@ class ScannedItemActivity : AppCompatActivity() {
         notifyQuantityEditText = findViewById(R.id.itemNotificationQoH)
         quantityEditText = findViewById(R.id.itemQoH)
         editTexts = arrayOf(nameEditText, priceEditText, notifyQuantityEditText, quantityEditText)
+        for (editText in editTexts) {
+            editText.setOnFocusChangeListener { view, hasFocus -> if (!hasFocus) hideKeyboard(view)}
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun setButtons() {
