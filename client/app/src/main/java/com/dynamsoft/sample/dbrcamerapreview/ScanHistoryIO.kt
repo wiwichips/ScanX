@@ -15,23 +15,25 @@ fun writeScan(barcode: String, context: Context) {
 }
 
 fun readScans(context: Context): ArrayList<String> {
-    val path = context.getFilesDir()
-    val letDirectory = File(path, "")
-    letDirectory.mkdirs()
-    val file = File(letDirectory, "scan_history.txt")
-    val bf = FileInputStream(file).bufferedReader()
     val array = ArrayList<String>()
-    var line: String?
+    try {
+        val path = context.getFilesDir()
+        val letDirectory = File(path, "")
+        letDirectory.mkdirs()
+        val file = File(letDirectory, "scan_history.txt")
+        val bf = FileInputStream(file).bufferedReader()
+        var line: String?
 
-    // add each element to an array
-    line = bf.readLine()
-    if (line != null) array.add(line)
-    while (line != null) {
+        // add each element to an array
         line = bf.readLine()
-        array.add(line)
-    }
+        if (line != null) array.add(line)
+        while (line != null) {
+            line = bf.readLine()
+            array.add(line)
+        }
 
-    array.removeAt(array.size - 1)
+        array.removeAt(array.size - 1)
+    } catch (e: Exception) { }
 
     return array
 }
