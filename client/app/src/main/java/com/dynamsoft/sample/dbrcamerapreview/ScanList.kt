@@ -105,6 +105,8 @@ class ScanList : AppCompatActivity() {
         val jsonResponses: MutableList<String> = ArrayList()
         val url = "http://173.34.40.62:5000/"
 
+        inventoryList.clear()
+
         // makes a get request on each item to get its name
         val callback = { response: JSONArray ->
             try {
