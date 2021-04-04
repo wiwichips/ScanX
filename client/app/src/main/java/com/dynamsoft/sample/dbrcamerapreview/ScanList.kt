@@ -33,6 +33,7 @@ class ScanList : AppCompatActivity() {
     private var inventoryList: MutableList<ScanItem> = ArrayList<ScanItem>()
     private var scanHistoryList: MutableList<String> = ArrayList<String>()
     private var currentTab = 0
+    private var scansLike: MutableList<ScanItem> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +48,12 @@ class ScanList : AppCompatActivity() {
         tl.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 currentTab = tab.getPosition()
+
+                scansLike.clear()
+
                 if (currentTab == 0) {
                     displayInventory()
+
                 }
 
                 else if (currentTab == 1) {
@@ -77,13 +82,14 @@ class ScanList : AppCompatActivity() {
 
                         // remove last character if it was newline
                         val fullString = s.toString().substring(0, s.length - 1)
-                        editText.setText(fullString);
+                        editText.setText(fullString)
                     }
                 }
 
                 else {
                     val fullString = s.toString()
-                    val scansLike: List<ScanItem> = searchLike(fullString)
+                    scansLike.clear()
+                    scansLike = searchLike(fullString)
                     val strScansLike: MutableList<String> = ArrayList()
                     for (si in scansLike) {
                         strScansLike.add(si.toString())
@@ -97,14 +103,17 @@ class ScanList : AppCompatActivity() {
         val lv : ListView =  findViewById(R.id.lastscanslistview)
         lv.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
 
-            if (currentTab == 0) {
-                println(inventoryList[position].serialNumber)
-                startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", inventoryList[position].serialNumber) })
+            if (scansLike.size > 0) {
+                startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scansLike[position].serialNumber) })
             }
-
             else {
-                println(scanHistoryList[position])
-                startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scanHistoryList[position]) })
+                if (currentTab == 0) {
+                    println(inventoryList[position].serialNumber)
+                    startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", inventoryList[position].serialNumber) })
+                } else {
+                    println(scanHistoryList[position])
+                    startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scanHistoryList[position]) })
+                }
             }
         })
     }
@@ -178,9 +187,10 @@ class ScanList : AppCompatActivity() {
     /**
      * Returns an arraylist of scanned items that contain the user's string
      */
-    private fun searchLike(needle: String): List<ScanItem> {
+    private fun searchLike(needle: String): MutableList<ScanItem> {
         val startsWith: MutableList<ScanItem> = ArrayList<ScanItem>()
         val containsNotStart: MutableList<ScanItem> = ArrayList<ScanItem>()
+        val joined: MutableList<ScanItem> = ArrayList()
         for (si in inventoryList) {
             // ignore case when si.length < needle.length
             if (si.startsWith(needle)) {
@@ -192,7 +202,9 @@ class ScanList : AppCompatActivity() {
             }
         }
 
-        return startsWith + containsNotStart
+        startsWith.addAll(containsNotStart)
+
+        return startsWith
     }
 
     private fun setAdapter(list: ArrayList<String>) {
