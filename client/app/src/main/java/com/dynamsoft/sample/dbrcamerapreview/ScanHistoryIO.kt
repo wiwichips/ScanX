@@ -1,9 +1,7 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
-import android.R
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import java.io.*
 
 fun writeScan(barcode: String, context: Context) {
@@ -26,10 +24,14 @@ fun readScans(context: Context): ArrayList<String> {
     var line: String?
 
     // add each element to an array
-    do {
+    line = bf.readLine()
+    if (line != null) array.add(line)
+    while (line != null) {
         line = bf.readLine()
         array.add(line)
-    } while (line != null)
+    }
+
+    array.removeAt(array.size - 1)
 
     return array
 }
