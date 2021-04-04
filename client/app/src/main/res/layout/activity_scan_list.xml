@@ -18,18 +18,16 @@
 
     <EditText
         android:id="@+id/invSearchBar"
-        android:layout_width="379dp"
-        android:layout_height="73dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="356dp"
+        android:layout_height="72dp"
         android:hint="@string/search"
         android:imeOptions="actionDone"
         app:layout_constraintBottom_toTopOf="@+id/lastscanslistview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tabLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        app:layout_constraintVertical_bias="0.555" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -24,14 +23,11 @@ import org.json.JSONArray
 import org.json.JSONException
 
 
-/**
- * ugly code. Shawn, please don't make fun of me. I hacked this together very early in the morning...
- */
-
 class ScanList : AppCompatActivity() {
+
     private lateinit var listView: ListView
-    private var inventoryList: MutableList<ScanItem> = ArrayList<ScanItem>()
-    private var scanHistoryList: MutableList<String> = ArrayList<String>()
+    private var inventoryList: MutableList<ScanItem> = ArrayList()
+    private var scanHistoryList: MutableList<String> = ArrayList()
     private var currentTab = 0
     private var scansLike: MutableList<ScanItem> = ArrayList()
 
@@ -40,14 +36,14 @@ class ScanList : AppCompatActivity() {
         setContentView(R.layout.activity_scan_list)
         listView = findViewById(R.id.lastscanslistview)
 
-        // by defualt, display all the items in the inventory
+        // by default, display all the items in the inventory
         displayInventory()
 
         // set listeners for the tabs
         val tl: TabLayout = findViewById(R.id.tabLayout)
         tl.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                currentTab = tab.getPosition()
+                currentTab = tab.position
 
                 scansLike.clear()
 
@@ -74,11 +70,11 @@ class ScanList : AppCompatActivity() {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if( -1 != s.toString().indexOf("\n") ){
-                    val view: View? = getCurrentFocus()
+                    val view: View? = currentFocus
                     if (view != null) {
                         // escape from keyboard
                         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+                        imm.hideSoftInputFromWindow(view.windowToken, 0)
 
                         // remove last character if it was newline
                         val fullString = s.toString().substring(0, s.length - 1)
@@ -99,10 +95,8 @@ class ScanList : AppCompatActivity() {
             }
         })
 
-        // open ScannedItemAcitivy on user click on thing
-        val lv : ListView =  findViewById(R.id.lastscanslistview)
-        lv.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
-
+        // open ScannedItemActivity on user click on thing
+        listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             if (scansLike.size > 0) {
                 startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scansLike[position].serialNumber) })
             }
@@ -115,19 +109,19 @@ class ScanList : AppCompatActivity() {
                     startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scanHistoryList[position]) })
                 }
             }
-        })
+        }
     }
 
     private fun displayScanHistory() {
         scanHistoryList.clear()
-        scanHistoryList = readScans(this)
-        val scanList : MutableList<String> = ArrayList<String>()
-        for (i in 0..scanHistoryList.size - 1) {
+        scanHistoryList = readScans(this).reversed().toMutableList()
+        val scanList : MutableList<String> = ArrayList()
+        for (i in 0 until scanHistoryList.size) {
             scanList.add(searchBarcode(scanHistoryList[i]).toString())
         }
 
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, scanList)
-        listView.setAdapter(adapter)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, scanList)
+        listView.adapter = adapter
     }
 
     private fun displayInventory() {
@@ -147,8 +141,8 @@ class ScanList : AppCompatActivity() {
                     inventoryList.add(ScanItem(jsonObject))
                 }
 
-                val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, jsonResponses)
-                listView.setAdapter(adapter)
+                val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, jsonResponses)
+                listView.adapter = adapter
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -172,7 +166,7 @@ class ScanList : AppCompatActivity() {
      */
 
     private fun searchBarcode(needle: String): ScanItem {
-        for (i in 0..inventoryList.size - 1) {
+        for (i in 0 until inventoryList.size) {
             if (needle == inventoryList[i].serialNumber)
                 return inventoryList[i]
         }
@@ -188,9 +182,8 @@ class ScanList : AppCompatActivity() {
      * Returns an arraylist of scanned items that contain the user's string
      */
     private fun searchLike(needle: String): MutableList<ScanItem> {
-        val startsWith: MutableList<ScanItem> = ArrayList<ScanItem>()
-        val containsNotStart: MutableList<ScanItem> = ArrayList<ScanItem>()
-        val joined: MutableList<ScanItem> = ArrayList()
+        val startsWith: MutableList<ScanItem> = ArrayList()
+        val containsNotStart: MutableList<ScanItem> = ArrayList()
         for (si in inventoryList) {
             // ignore case when si.length < needle.length
             if (si.startsWith(needle)) {
@@ -208,7 +201,7 @@ class ScanList : AppCompatActivity() {
     }
 
     private fun setAdapter(list: ArrayList<String>) {
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list)
-        listView.setAdapter(adapter)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        listView.adapter = adapter
     }
 }
