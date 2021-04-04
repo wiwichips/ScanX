@@ -114,7 +114,7 @@ class ScanList : AppCompatActivity() {
 
     private fun displayScanHistory() {
         scanHistoryList.clear()
-        scanHistoryList = readScans(this).reversed().toMutableList()
+        scanHistoryList = readScans(this).reversed().take(25).toMutableList()
         val scanList : MutableList<String> = ArrayList()
         for (i in 0 until scanHistoryList.size) {
             scanList.add(searchBarcode(scanHistoryList[i]).toString())
