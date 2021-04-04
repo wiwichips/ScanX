@@ -1,12 +1,15 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
@@ -28,6 +31,7 @@ import org.json.JSONException
 class ScanList : AppCompatActivity() {
     private lateinit var listView: ListView
     private var inventoryList: MutableList<ScanItem> = ArrayList<ScanItem>()
+    private var scanHistoryList: MutableList<String> = ArrayList<String>()
     private var currentTab = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,10 +92,26 @@ class ScanList : AppCompatActivity() {
                 }
             }
         })
+
+        // open ScannedItemAcitivy on user click on thing
+        val lv : ListView =  findViewById(R.id.lastscanslistview)
+        lv.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
+
+            if (currentTab == 0) {
+                println(inventoryList[position].serialNumber)
+                startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", inventoryList[position].serialNumber) })
+            }
+
+            else {
+                println(scanHistoryList[position])
+                startActivity(Intent(this@ScanList, ScannedItemActivity::class.java).apply { putExtra("barcode", scanHistoryList[position]) })
+            }
+        })
     }
 
     private fun displayScanHistory() {
-        val scanHistoryList = readScans(this)
+        scanHistoryList.clear()
+        scanHistoryList = readScans(this)
         val scanList : MutableList<String> = ArrayList<String>()
         for (i in 0..scanHistoryList.size - 1) {
             scanList.add(searchBarcode(scanHistoryList[i]).toString())
