@@ -54,6 +54,9 @@
     <string name="edit_item">Edit Item</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
-    <string name="inventory">Inventory</string>
+    <string name="inventorytab">Inventory</string>
     <string name="flashlight">Flashlight</string>
+    <string name="inventory">Inventory</string>
+    <string name="history">History</string>
+    <string name="search">Search</string>
 </resources>
