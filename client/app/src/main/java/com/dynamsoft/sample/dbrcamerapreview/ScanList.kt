@@ -1,8 +1,16 @@
 package com.dynamsoft.sample.dbrcamerapreview
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ListView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
@@ -12,6 +20,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.json.JSONArray
 import org.json.JSONException
 
+
 /**
  * ugly code. Shawn, please don't make fun of me. I hacked this together very early in the morning...
  */
@@ -19,6 +28,7 @@ import org.json.JSONException
 class ScanList : AppCompatActivity() {
     private lateinit var listView: ListView
     private var inventoryList: MutableList<ScanItem> = ArrayList<ScanItem>()
+    private var currentTab = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,18 +42,47 @@ class ScanList : AppCompatActivity() {
         val tl: TabLayout = findViewById(R.id.tabLayout)
         tl.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val tabNum = tab.getPosition()
-                if (tabNum == 0) {
+                currentTab = tab.getPosition()
+                if (currentTab == 0) {
                     displayInventory()
                 }
 
-                else if (tabNum == 1) {
+                else if (currentTab == 1) {
                     displayScanHistory()
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+
+        // Search bar
+        val editText: EditText = findViewById(R.id.invSearchBar)
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if( -1 != s.toString().indexOf("\n") ){
+                    val view: View? = getCurrentFocus()
+                    if (view != null) {
+                        // escape from keyboard
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+
+                        // remove last character if it was newline
+                        val fullString = s.toString().substring(0, s.length - 1)
+                        editText.setText(fullString);
+                    }
+                }
+
+                else {
+                    val fullString = s.toString()
+                    println(fullString)
+                    println("************")
+                }
+            }
         })
     }
 
