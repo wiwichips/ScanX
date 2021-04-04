@@ -26,4 +26,37 @@ class ScanItem () {
         return "Name: $productName\nQty: $quantity"
     }
 
+    fun startsWith (needle: String): Boolean {
+        if (productName.length >= needle.length) {
+            if (productName.toLowerCase().startsWith(needle.toLowerCase())) {
+                return true
+            }
+        }
+
+        if (serialNumber.length >= needle.length) {
+            if (serialNumber.toLowerCase().startsWith(needle.toLowerCase())) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    fun contains (needle: String): Boolean {
+        if (productName.length >= needle.length) {
+            if (productName.contains(needle)) {
+                return true
+            }
+        }
+
+        if (serialNumber.length >= needle.length) {
+            if (serialNumber.contains(needle)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+
 }

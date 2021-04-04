@@ -79,8 +79,12 @@ class ScanList : AppCompatActivity() {
 
                 else {
                     val fullString = s.toString()
-                    println(fullString)
-                    println("************")
+                    val scansLike: List<ScanItem> = searchLike(fullString)
+                    val strScansLike: MutableList<String> = ArrayList()
+                    for (si in scansLike) {
+                        strScansLike.add(si.toString())
+                    }
+                    setAdapter(strScansLike as ArrayList<String>)
                 }
             }
         })
@@ -147,5 +151,30 @@ class ScanList : AppCompatActivity() {
                 "0.0",
                 "0"
         )
+    }
+
+    /**
+     * Returns an arraylist of scanned items that contain the user's string
+     */
+    private fun searchLike(needle: String): List<ScanItem> {
+        val startsWith: MutableList<ScanItem> = ArrayList<ScanItem>()
+        val containsNotStart: MutableList<ScanItem> = ArrayList<ScanItem>()
+        for (si in inventoryList) {
+            // ignore case when si.length < needle.length
+            if (si.startsWith(needle)) {
+                startsWith.add(si)
+            }
+
+            else if (si.contains(needle)) {
+                containsNotStart.add(si)
+            }
+        }
+
+        return startsWith + containsNotStart
+    }
+
+    private fun setAdapter(list: ArrayList<String>) {
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list)
+        listView.setAdapter(adapter)
     }
 }
