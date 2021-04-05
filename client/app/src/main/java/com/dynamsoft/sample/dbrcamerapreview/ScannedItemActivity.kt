@@ -40,7 +40,6 @@ class ScannedItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scanned_item)
         barcode = intent.getStringExtra("barcode")
         // save barcode
-        writeScan(barcode, this)
         findViewById<TextView>(R.id.barcodeTitle).text = barcode
         setEditTexts()
         setButtons()

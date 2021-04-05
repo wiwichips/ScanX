@@ -521,6 +521,7 @@ class Camera2BasicFragment : Fragment(), OnRequestPermissionsResultCallback {
 
     private fun onScan(barcode: String) {
         if (barcode.all { it.isDigit() }) {
+            activity?.let { writeScan(barcode, it.applicationContext) }
             val intent = Intent(mMainActivity, ScannedItemActivity::class.java).apply {
                 putExtra("barcode", barcode)
             }
