@@ -316,9 +316,9 @@ def search_item():
 
     try:
         if item['type'] == "name":
-            db_cursor.execute("SELECT * FROM inventory WHERE UPPER(PRODUCT_TITLE) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
+            db_cursor.execute("SELECT * FROM Inventory WHERE UPPER(PRODUCT_TITLE) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
         elif item['type'] == "barcode":
-            db_cursor.execute("SELECT * FROM inventory WHERE UPPER(SERIAL_NUMBER) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
+            db_cursor.execute("SELECT * FROM Inventory WHERE UPPER(SERIAL_NUMBER) LIKE UPPER(%s)", ("%" + item['term'] + "%",))
 
         found_rows = db_cursor.fetchall()
         db.close()
