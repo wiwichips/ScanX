@@ -4,7 +4,8 @@ ScanX is an Android app and server management system for scanning and organizing
 
 # Features
 ![Scanning Functionality](https://i.imgur.com/IgIWULq.png "ScanX")
-
+![Scanning Functionality](https://i.imgur.com/6SJd9P5.png "ScanX")
+![Scanning Functionality](https://i.imgur.com/MZsleps.png "ScanX")
 
 # Installation 
 Client
