@@ -4,17 +4,17 @@ from flask import Flask, render_template, jsonify, request, session
 from urllib.parse import unquote
 from pyfcm import FCMNotification
 
-push_service = FCMNotification(api_key="AAAAAcR0TJo:APA91bHXcZriWflLWElaYyWjuN8mMZuNoID7sdU6vtphNcxAHVCWoquxQK99kxjpg_GP_FOSPAJImleMGhxlsH4TN6VskzWvLFyZfr_hPGXSQOVk05rloo1F62UwAeNzB-X2XVd3PnK0")
+push_service = FCMNotification(api_key="<FIREBASE CLOUD MESSAGING SERVER KEY>")
 app = Flask(__name__, static_url_path='')
-app.secret_key = b'A+jWl4h6wMkR7LcWBm85AO8q'
+app.secret_key = b'<YOUR SESSION SECRET>'
 registration_ids = set([])
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
 
 def get_db() -> MySQLdb.Connection:
-    db = MySQLdb.connect(host='127.0.0.1',
-                         user='app',
-                         passwd='3EQCjVrNQ9Z9Ysvf',
+    db = MySQLdb.connect(host='<DATABASE HOST>',
+                         user='<USERNAME>',
+                         passwd='<PASSWORD>',
                          db='scanx')
     return db
 
